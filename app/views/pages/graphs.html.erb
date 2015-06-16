@@ -1,0 +1,90 @@
+<div class="pages_body">
+  <h1>// Graphs</h1>
+  <br />
+
+  <%= form_tag graphs_path, :method => 'get', :class => "form-inline" do %>  
+    <p>  
+      <%= text_field_tag :start_range, params[:start_range], value: @search_start_dt, class: "form-control input-sm" %>
+      to 
+      <%= text_field_tag :end_range, params[:end_range], value: @search_end_dt, class: "form-control input-sm" %>
+
+      <%= text_field_tag :minter, params[:minter], placeholder: "Minute Interval: 30", class: "form-control input-sm", type: 'number' %>
+
+      <%= text_field_tag :chart_ht, params[:chart_ht], placeholder: "Chart Height: 750 px", class: "form-control input-sm", type: 'number' %>
+
+        <% if logged_in? %>
+          <%= submit_tag "Generate", :name => nil, class: "btn btn-sm" %>
+        <% else %>
+          <%= submit_tag "Generate", :name => nil, class: "btn btn-sm", disabled: true %>
+        <% end %>
+    </p>
+
+  <% end %>
+
+  <div id="graph_nav">
+
+    <br />
+    <span style='padding: 10px 15px 0px 0px;'>
+      Graphs:
+    </span>
+
+    <a href="#acm_powerout_chart">Power Output by Module</a>
+      <span class="nav_rod">//</span>
+
+    <a href="#acm_pow_total_chart">Total Power Output</a>
+      <span class="nav_rod">//</span>
+
+    <a href="#pv_temp_chart">Temperature by Module</a>
+      <span class="nav_rod">//</span>
+
+    <a href="#irr_chart">Solar Irradiance</a>
+      <span class="nav_rod">//</span>
+
+    <a href="#wtemp_flowrate_chart">Water Temp. and Flowrate</a>
+      <span class="nav_rod">//</span>
+
+    <a href="#bat_box_chart">Battery Box Temperature</a>
+
+    <hr />
+
+  </div>
+
+  <br />
+    
+  <% if @custom_msg.present? %>
+    <div id="custom_msg"><%= @custom_msg %></div>
+    <br />
+  <% end %>
+  
+  <ul>
+    <li><h3><%= @equip_acm %> (<%= @acm_disp_date %>)</h3></li>
+
+      <div id="acm_powerout_chart" class="graphs">
+        <%= high_chart("acm_powerout_chart", @acm_powerout_chart) %>
+      </div>
+
+      <div id="acm_pow_total_chart" class="graphs">
+        <%= high_chart("acm_pow_total_chart", @acm_pow_total_chart) %>
+      </div>
+
+    <li><h3><%= @equip_fluke %> (<%= @fluke_disp_date %>)</h3></li>
+
+      <div id="pv_temp_chart" class="graphs">
+        <%= high_chart("pv_temp_chart", @pv_temp_chart) %>
+      </div>
+
+      <div id="irr_chart" class="graphs">
+        <%= high_chart("irr_chart", @irr_chart) %>
+      </div>
+
+      <div id="wtemp_flowrate_chart" class="graphs">
+        <%= high_chart("wtemp_flowrate_chart", @wtemp_flowrate_chart) %>
+      </div>
+
+      <div id="bat_box_chart" class="graphs">
+        <%= high_chart("bat_box_chart", @bat_box_chart) %>
+      </div>
+
+  </ul>
+
+</div>

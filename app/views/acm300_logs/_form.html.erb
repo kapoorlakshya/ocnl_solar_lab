@@ -1,0 +1,49 @@
+<%= form_for(@acm300_log) do |f| %>
+  <% if @acm300_log.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@acm300_log.errors.count, "error") %> prohibited this acm300_log from being saved:</h2>
+
+      <ul>
+      <% @acm300_log.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :acm_module %><br>
+    <%= f.text_field :acm_module %>
+  </div>
+  <div class="field">
+    <%= f.label :log_date %><br>
+    <%= f.date_select :log_date %>
+  </div>
+  <div class="field">
+    <%= f.label :log_time %><br>
+    <%= f.datetime_select :log_time %>
+  </div>
+  <div class="field">
+    <%= f.label :vin %><br>
+    <%= f.text_field :vin %>
+  </div>
+  <div class="field">
+    <%= f.label :iin %><br>
+    <%= f.text_field :iin %>
+  </div>
+  <div class="field">
+    <%= f.label :vout %><br>
+    <%= f.text_field :vout %>
+  </div>
+  <div class="field">
+    <%= f.label :iout %><br>
+    <%= f.text_field :iout %>
+  </div>
+  <div class="field">
+    <%= f.label :power %><br>
+    <%= f.text_field :power %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

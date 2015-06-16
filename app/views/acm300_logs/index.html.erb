@@ -1,0 +1,87 @@
+<div id="status">
+  <span id ="equip_desc"><%= @equip_acm %></span>
+  <br />
+
+  <kbd>
+    <b>Last Nightly Update:</b> <%= @last_acm_nightly_dt %>
+    <% if @outdated_acm then " (Outdated)" end %>
+
+  </kbd>
+
+  <br />
+
+  <div class="search_fields">
+
+    <%= form_tag acm300_logs_path, :method => 'get', :class => "form-inline" do %>  
+      <p>
+        <%= text_field_tag :start_range, params[:start_range], value: @search_start_dt, class: "form-control input-sm" %>
+        to 
+        <%= text_field_tag :end_range, params[:end_range], value: @search_end_dt, class: "form-control input-sm" %>  
+
+        <% if logged_in? %>
+          <%= submit_tag "Search", :name => nil, class: "btn btn-sm" %>
+        <% else %>
+          <%= submit_tag "Search", :name => nil, class: "btn btn-sm", disabled: true %>
+        <% end %>
+      </p>
+    <% end %>
+
+    <% if @custom_msg.present? %>
+      <div id="custom_msg"><%= @custom_msg %></div>
+    <% end %>
+
+  </div>
+
+</div>
+
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th scope="column">Module</th>
+      <th scope="column">Time</th>
+      <th scope="column">Vin (V)</th>
+      <th scope="column">Iin (A)</th>
+      <th scope="column">Vout (V)</th>
+      <th scope="column">Iout (A)</th>
+      <th scope="column">Power (W)</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @acm_logs.each do |acm| %>
+      <tr>
+        <td scope="row"><%= acm.acm_module %></td>
+        <td scope="row">
+          <% if acm.log_time == Date.today  %>
+          <% else %>
+            <%= acm.log_time.strftime('%b %d, %Y at') %>
+          <% end %>
+          
+          <%= acm.log_time.strftime('%I:%M %p') %>
+        </td>
+        <td scope="row"><%= acm.vin.round(4) %></td>
+        <td scope="row"><%= acm.iin.round(4) %></td>
+        <td scope="row"><%= acm.vout.round(4) %></td>
+        <td scope="row"><%= acm.iout.round(4) %></td>
+        <td scope="row"><%= acm.power.round(4) %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<div class="pagination_area">
+
+  <span><%= will_paginate @acm_logs, :previous_label => '<span class="glyphicon glyphicon-chevron-left"></span>', :next_label => '<span class="glyphicon glyphicon-chevron-right"></span>' %></span>
+
+  <% if @acm_logs.count > 20 %>
+
+    <span class="nav_rod_paginate">//</span>
+
+    <a href="#top" id="top_link">
+      <span class="glyphicon glyphicon-chevron-up" aria-hidden="true"></span> Go to top
+    </a>
+
+  <% end %>
+  
+</div>

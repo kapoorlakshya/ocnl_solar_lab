@@ -1,0 +1,116 @@
+<head> <meta http-equiv="refresh" content="60"> </head>
+
+<div id="status">
+
+  <span id ="equip_desc"><%= @equip_fluke %></span>
+  <br />
+
+  <kbd>
+    <b>Last Update:</b> <%= @last_update %> at <%= @last_update_timestamp %>
+    <% if @outdated_fluke then " (Outdated)" end %>
+  </kbd>
+
+  <br />
+
+  <div class="search_fields">
+
+    <%= form_tag flukes_path, :method => 'get', :class => "form-inline" do %>  
+      <p>
+        <%= text_field_tag :start_range, params[:start_range], value: @search_start_dt, class: "form-control input-sm", type: 'datetime' %>
+        to 
+        <%= text_field_tag :end_range, params[:end_range], value: @search_end_dt, class: "form-control input-sm", type: 'datetime' %>  
+
+        <% if logged_in? %>
+          <%= submit_tag "Search", :name => nil, class: "btn btn-sm" %>
+        <% else %>
+          <%= submit_tag "Search", :name => nil, class: "btn btn-sm", disabled: true %>
+        <% end %>
+      </p>
+    <% end %>
+
+    <% if @custom_msg.present? %>
+      <div id="custom_msg"><%= @custom_msg %></div>
+    <% end %>
+
+ </div>
+
+</div>
+
+<table class="table table-striped table-responsive">
+  <thead>
+    <tr>
+      <th scope="column">Time</th>
+      <th scope="column">Pyra1</th>
+      <th scope="column">Pyra2</th>
+      <th scope="column">RCell1</th>
+      <th scope="column">RCell2</th>
+<!--       <th scope="column">TempRC1</th>
+      <th scope="column">TempRC2</th> -->
+      <th scope="column">Flowrate</th>
+      <th scope="column">PV1</th>
+      <th scope="column">PV2</th>
+      <th scope="column">PV3</th>
+      <th scope="column">PV4</th>
+      <th scope="column">PV5</th>
+      <th scope="column">PV6</th>
+      <th scope="column">HXer In</th>
+      <th scope="column">HXer Out</th>
+      <th scope="column">Ambient</th>
+      <th scope="column">Bat Box Air</th>
+      <th scope="column">Bat Post</th>
+      <th scope="column">Tank Top</th>
+      <th scope="column">Tank Bot</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @flukes.each do |fluke| %>
+      <tr>
+        <td scope="row">
+          <% if fluke.log_time.to_date == Date.today  %>
+          <% else %>
+            <%= fluke.log_time.strftime('%b %d, %Y at') %>
+          <% end %>
+        	
+          <%= fluke.log_time.strftime('%I:%M %p') %>
+        </td>
+        <!-- Convert to float and round to $rnd places -->
+        <td scope="row"><%= fluke.irr_py1 %></td>
+        <td scope="row"><%= fluke.irr_py2 %></td>
+        <td scope="row"><%= fluke.irr_rc1 %></td>
+        <td scope="row"><%= fluke.irr_rc2 %></td>
+        <td scope="row"><%= fluke.flowrate %></td>
+        <td scope="row"><%= fluke.temp_pv1 %></td>
+        <td scope="row"><%= fluke.temp_pv2 %></td>
+        <td scope="row"><%= fluke.temp_pv3 %></td>
+        <td scope="row"><%= fluke.temp_pv4 %></td>
+        <td scope="row"><%= fluke.temp_pv5 %></td>
+        <td scope="row"><%= fluke.temp_pv6 %></td>
+        <td scope="row"><%= fluke.temp_hxi %></td>
+        <td scope="row"><%= fluke.temp_hxo %></td>
+        <td scope="row"><%= fluke.temp_amb %></td>
+        <td scope="row"><%= fluke.temp_bbox %></td>
+        <!-- Bat Post or Channel 20 was added later. Print 0 for unavailable data. -->
+        <td scope="row"><%= fluke.temp_bpst or 0.0 %></td> 
+        <td scope="row"><%= fluke.temp_wtt %></td>
+        <td scope="row"><%= fluke.temp_wtb %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<div class="pagination_area">
+
+  <span><%= will_paginate @flukes, :previous_label => '<span class="glyphicon glyphicon-chevron-left"></span>', :next_label => '<span class="glyphicon glyphicon-chevron-right"></span>' %></span>
+
+  <% if @flukes.count > 20 %>
+
+    <span class="nav_rod_paginate">//</span>
+
+    <a href="#top" id="top_link">
+      <span class="glyphicon glyphicon-chevron-up" aria-hidden="true"></span> Go to top
+    </a>
+
+  <% end %>
+
+</div>

@@ -1,0 +1,21 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  acm_module: MyString
+  log_date: 2015-04-14
+  log_time: 2015-04-14 00:17:21
+  vin: 1.5
+  iin: 1.5
+  vout: 1.5
+  iout: 1.5
+  power: 1.5
+
+two:
+  acm_module: MyString
+  log_date: 2015-04-14
+  log_time: 2015-04-14 00:17:21
+  vin: 1.5
+  iin: 1.5
+  vout: 1.5
+  iout: 1.5
+  power: 1.5

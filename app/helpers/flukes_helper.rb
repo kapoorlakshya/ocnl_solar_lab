@@ -1,0 +1,2 @@
+module FlukesHelper
+end

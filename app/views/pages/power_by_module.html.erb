@@ -1,0 +1,84 @@
+<div id="status">
+  <span id ="equip_desc">// <%= @equip_acm %></span>
+  <br />
+
+  <div class="search_fields">
+
+    <%= form_tag power_by_module_path, :method => 'get', :class => "form-inline" do %>  
+      <p>
+        <%= text_field_tag :start_range, params[:start_range], value: @search_start_dt, class: "form-control input-sm" %>
+        to 
+        <%= text_field_tag :end_range, params[:end_range], value: @search_end_dt, class: "form-control input-sm" %>  
+
+        <% if logged_in? %>
+          <%= submit_tag "Search", :name => nil, class: "btn btn-sm" %>
+        <% else %>
+          <%= submit_tag "Search", :name => nil, class: "btn btn-sm", disabled: true %>
+        <% end %>
+      </p>
+    <% end %>
+
+  </div>
+
+</div>
+
+
+<table class="table table-striped table-responsive .table-hover" id="acm_log_list">
+  <thead>
+    <tr>
+      <th scope="column">Time</th>
+      <th scope="column">PV1</th>
+      <th scope="column">PV2</th>
+      <th scope="column">PV3</th>
+      <th scope="column">PV4</th>
+      <th scope="column">PV5</th>
+      <th scope="column">PV6</th>
+      <th scope="column">Total (W)</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @acm_logs.keys.each do |minute| %>
+
+      <tr>
+
+        <td scope="row">
+          <!-- Display date and time -->
+            <%= @acm_logs[minute][:log_dt].strftime('%b %d, %Y at %I:%M %p') %>
+        </td>
+
+        <!-- Display power value per module  -->
+          <td scope="row" id="acm_pv1_td">
+            <%= @acm_logs[minute]["M421101006AJB"] %>
+          </td>
+
+          <td scope="row" id="acm_pv2_td">
+            <%= @acm_logs[minute]["M431101063AJA"] %>
+          </td>
+
+          <td scope="row" id="acm_pv3_td">
+            <%= @acm_logs[minute]["M431101029AJ2"] %>
+          </td>
+
+          <td scope="row" id="acm_pv4_td">
+            <%= @acm_logs[minute]["M461101120AJF"] %>
+          </td>
+
+          <td scope="row" id="acm_pv5_td">
+            <%= @acm_logs[minute]["M461101053AJ8"] %>
+          </td>
+
+          <td scope="row" id="acm_pv6_td">
+            <%= @acm_logs[minute]["M461101194AJ0"] %>
+          </td>
+
+          <td scope="row" id="total_power">
+            <%= @acm_logs[minute][:total_pow].round(4) %>
+          </td>
+
+      </tr>
+
+    <% end %>
+
+  </tbody>
+</table>

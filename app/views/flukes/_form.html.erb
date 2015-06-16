@@ -1,0 +1,113 @@
+<%= form_for(@fluke) do |f| %>
+  <% if @fluke.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@fluke.errors.count, "error") %> prohibited this fluke from being saved:</h2>
+
+      <ul>
+      <% @fluke.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :log_time %><br>
+    <%= f.datetime_select :log_time %>
+  </div>
+  <div class="field">
+    <%= f.label :off %><br>
+    <%= f.number_field :off %>
+  </div>
+  <div class="field">
+    <%= f.label :irr_py1 %><br>
+    <%= f.text_field :irr_py1 %>
+  </div>
+  <div class="field">
+    <%= f.label :irr_py2 %><br>
+    <%= f.text_field :irr_py2 %>
+  </div>
+  <div class="field">
+    <%= f.label :irr_rc1 %><br>
+    <%= f.text_field :irr_rc1 %>
+  </div>
+  <div class="field">
+    <%= f.label :temp_rc1 %><br>
+    <%= f.text_field :temp_rc1 %>
+  </div>
+  <div class="field">
+    <%= f.label :irr_rc2 %><br>
+    <%= f.text_field :irr_rc2 %>
+  </div>
+  <div class="field">
+    <%= f.label :temp_rc2 %><br>
+    <%= f.text_field :temp_rc2 %>
+  </div>
+  <div class="field">
+    <%= f.label :flowrate %><br>
+    <%= f.text_field :flowrate %>
+  </div>
+  <div class="field">
+    <%= f.label :temp_pv1 %><br>
+    <%= f.text_field :temp_pv1 %>
+  </div>
+  <div class="field">
+    <%= f.label :temp_pv2 %><br>
+    <%= f.text_field :temp_pv2 %>
+  </div>
+  <div class="field">
+    <%= f.label :temp_pv3 %><br>
+    <%= f.text_field :temp_pv3 %>
+  </div>
+  <div class="field">
+    <%= f.label :temp_pv4 %><br>
+    <%= f.text_field :temp_pv4 %>
+  </div>
+  <div class="field">
+    <%= f.label :temp_pv5 %><br>
+    <%= f.text_field :temp_pv5 %>
+  </div>
+  <div class="field">
+    <%= f.label :temp_pv6 %><br>
+    <%= f.text_field :temp_pv6 %>
+  </div>
+  <div class="field">
+    <%= f.label :temp_hxi %><br>
+    <%= f.text_field :temp_hxi %>
+  </div>
+  <div class="field">
+    <%= f.label :temp_hxo %><br>
+    <%= f.text_field :temp_hxo %>
+  </div>
+  <div class="field">
+    <%= f.label :temp_amb %><br>
+    <%= f.text_field :temp_amb %>
+  </div>
+  <div class="field">
+    <%= f.label :temp_bbox %><br>
+    <%= f.text_field :temp_bbox %>
+  </div>
+  <div class="field">
+    <%= f.label :temp_wtt %><br>
+    <%= f.text_field :temp_wtt %>
+  </div>
+  <div class="field">
+    <%= f.label :temp_wtb %><br>
+    <%= f.text_field :temp_wtb %>
+  </div>
+  <div class="field">
+    <%= f.label :tempC %><br>
+    <%= f.text_field :tempC %>
+  </div>
+  <div class="field">
+    <%= f.label :total %><br>
+    <%= f.text_field :total %>
+  </div>
+  <div class="field">
+    <%= f.label :dioalarm %><br>
+    <%= f.number_field :dioalarm %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

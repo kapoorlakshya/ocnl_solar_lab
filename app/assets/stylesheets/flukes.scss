@@ -1,0 +1,140 @@
+// Place all the styles related to the flukes controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+
+#header {
+  background-color: rgba(252, 252, 252, 0.9);
+  position: fixed;
+  width: 100%;
+  z-index: 1000;
+  position: fixed;
+}
+
+#title {
+  float: left;
+  margin-right: 10px;
+}
+
+#navbar {
+  background-color: rgba(252, 252, 252, 0.9);
+  font-family: "Roboto";
+  text-align: left;
+  float: left;
+  display: inline-block;
+  font-size: 1em;
+  position: absolute;
+  border-bottom: 1px solid #CCC;
+  text-align: justify;
+  display: inline;
+  width: 98.7%; 
+  overflow: hidden;
+  /* Width is 98.7% so that the border ends at same distance as the table. */
+}
+
+.nav_rod{
+  padding: 0px 15px 0px 15px;
+  color: #CCC;
+}
+
+.nav_rod_paginate {
+  padding: 0px 20px 15px 20px;
+  color: #CCC;
+}
+
+#title_ocnl {
+  font-family: 'Roboto Slab';
+  font-size: 4.5em;
+  color: #00A388;
+  padding-right: 5px;
+}
+
+#title_sol {
+  font-size: 3.25em;
+  font-family: 'Raleway';
+  color: #FF6138;
+}
+
+#wrapper {
+   min-height:100%;
+   position:relative;
+}
+
+.body_view {
+  background-color: #FCFCFC;
+  padding: 100px 0px 30px 0px;
+  height: 100%;
+}
+
+#footer {
+  font-size: 14px;
+  position: absolute;
+  border-top: 1px solid #CCC;
+  border-bottom: 1px solid #CCC;
+  color: #585858;
+  text-align: center;
+  overflow: hidden;
+  width: 100%;
+  height: 30px;
+  font-size: 0.85em;
+  padding: 5px 0px 0px 0px;
+}
+
+.pagination_area {
+  margin-top: -20px;
+  padding: 0px 0px 10px 0px;
+}
+
+.pagination {
+  font-family: Arial;
+  font-size: 16px;
+  .previous_page { color: #00A388; font-size: 18px; font-style: bold; padding-right: 20px; }
+  .next_page { color: #FF6138; font-size: 18x; font-style: bold; padding-left: 20px; }
+  .current { font-size: 20px;}
+  .previous_page.disabled { color: #777; font-size: 18px; }
+  .next_page.disabled {color: #777; font-size: 18px; }
+}
+
+table {
+  white-space: nowrap;
+  text-align: justify;
+}
+
+th {
+  text-align: justify;
+}
+
+#fluke_datestamp {
+  font-size: 1em;
+}
+
+#top_link {
+  padding: 0px 0px 0px 0px;
+}
+
+.equip_info {
+  padding-right: 30px;
+  float: left;
+}
+
+#equip_desc {
+  font-family: "Roboto";
+  font-size: 2em;
+  float: left;
+}
+
+#status {
+  font-family: "Roboto";
+  margin-top: 40px;
+  float: left;
+  position: relative;
+  padding-bottom: 20px;
+}
+
+.search_fields{
+  float: left;
+  padding-top: 15px;
+}
+
+ul {
+  list-style: none;
+}

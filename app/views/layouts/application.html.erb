@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+  
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>OCNL Solar Lab - California State University, Chico</title>
+
+    <%= stylesheet_link_tag "application" %>
+    <%= javascript_include_tag "application", 'data-turbolinks-track' => true %>
+    <%= csrf_meta_tags %>
+    <script src="assets/highcharts/highcharts.js"></script>
+
+    <%= google_webfonts_init({
+      google: ['Roboto Slab', 'Roboto', 'Raleway']
+    }) %>
+
+  </head>
+
+  <body>
+
+    <div id="wrapper">
+
+      <div id="top"></div>
+
+        <div id="header">
+
+          <div id="title">
+
+            &nbsp;
+            <span id="title_ocnl">OCNL</span><span id="title_sol">Solar Lab</span>
+
+            <br />
+
+            <div id="navbar">
+
+              &nbsp;
+              <a href="<%= root_url %>">Sensor Data</a>
+              <span class="nav_rod">//</span> 
+
+              <a href="<%= acm300_logs_path %>">DC Power Data</a>
+              <span class="nav_rod">//</span>
+
+              <a href="<%= power_by_module_path %>">DC Power Data by Module</a>
+              <span class="nav_rod">//</span>
+
+              <a href="<%= graphs_path %>">Graphs</a>
+
+              <span class="nav_rod">//</span>
+              <a href="<%= documents_path %>">Documents</a>
+
+              <span class="nav_rod">//</span>
+              <a href="<%= gallery_path %>">Gallery</a>
+
+              <span class="nav_rod">//</span>
+              <a href="<%= about_path %>">About</a>
+
+              <span class="nav_rod">//</span>
+              <a href="<%= contact_path %>">Contact</a>
+
+              <span class="nav_rod">//</span>
+              <% if current_user %>
+                <%= link_to "Logout", :logout %>
+                (<%= current_user.email %>)
+                <!-- (<%= link_to current_user.email, edit_user_path(current_user.id) %>) -->
+              <% else %>
+                <!-- <%= link_to "Register", new_user_path %> | -->
+                <%= link_to "Login", :login %>
+              <% end %>
+
+            </div>
+
+          </div>
+
+        </div>
+
+        <div class="body_view">
+
+          <%= yield %>
+
+        </div>
+
+<!--       <div id="footer">
+            Developed for <a href="http://www.csuchico.edu/" target="_blank">California State University, Chico</a> by <a href="http://linkedin.com/in/kapoorlakshya" target="_blank">Lakshya Kapoor</a> (<a href="http://www.ecst.csuchico.edu/~tyson/classes/490.s15/" target="_blank">CINS490.S15</a>).
+      </div> -->
+
+    </div>
+
+  </body>
+    
+</html>

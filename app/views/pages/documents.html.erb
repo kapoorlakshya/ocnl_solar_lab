@@ -1,0 +1,179 @@
+<div class="pages_body">
+  <h1>// Documents</h1>
+</div>
+
+<% if alert %>
+  <div id="notice">
+  <br />
+  <p class="alert alert-danger" style="width: 90%"><%= alert %></p>
+  </div>
+<% end %>
+
+<div class="page_content">
+  <span class="doc_link">
+      <%= link_to 'PV Array Pole Mount Design', "documents/PV_Array_Pole_Mount_1_Eckart.pdf", :target => "_blank" %> 
+      <span class="doc_type">PDF / 1,366 KB</span>
+  </span>
+
+  <span class="doc_link">
+    <%= link_to ' Solar Lab Overview', "documents/OCNL_Solar_PV_Lab_Overview.pdf", :target => "_blank" %> 
+    <span class="doc_type">PDF / 165 KB</span>
+  </span>
+
+  <span class="doc_link">
+    <%= link_to 'PV Module Wiring Diagram', "documents/OCNL_Solar_PV_Lab_Module_Wiring.pdf", :target => "_blank" %> 
+    <span class="doc_type">PDF / 504 KB</span>
+  </span>
+
+  <span class="doc_link">
+    <%= link_to 'DC Wiring Diagram', "documents/OCNL_Solar_PV_Lab_DC_Wiring_Diagram.pdf", :target => "_blank" %> 
+    <span class="doc_type">PDF / 108 KB</span>
+  </span>
+
+  <span class="doc_link">
+    <%= link_to 'Sensor Wiring Diagram', "documents/OCNL_Solar_PV_Lab_Signal_Wiring.pdf", :target => "_blank" %> 
+    <span class="doc_type">PDF / 177 KB</span>
+  </span>
+
+  <span class="doc_link">
+    <%= link_to 'Sundrum Water Heating System', "documents/OCNL_Solar_PV_Lab_Sundrum_Collector_System.pdf", :target => "_blank" %> 
+    <span class="doc_type">PDF / 109 KB</span>
+  </span>
+
+  <div class="pages_sub_titles">
+    <h3>Module Map</h3>
+
+    <table>
+      <tr>
+        <td>
+          PV1 - <span style="background-color: <%= $col_pv1 %>; color: #F5F5F5; padding: 1px 4px 1px 4px">M421101006AJB</span>
+            <br />
+          PV2 - <span style="background-color: <%= $col_pv2 %>; color: #F5F5F5; padding: 1px 4px 1px 4px">M431101063AJA</span> 
+            <br />
+          PV3 - <span style="background-color: <%= $col_pv3 %>; color: #F5F5F5; padding: 1px 4px 1px 4px">M431101029AJ2</span> 
+            <br />
+          PV4 - <span style="background-color: <%= $col_pv4 %>; color: #F5F5F5; padding: 1px 4px 1px 4px">M461101120AJF</span> 
+            <br />
+          PV5 - <span style="background-color: <%= $col_pv5 %>; color: #F5F5F5; padding: 1px 4px 1px 4px">M461101053AJ8</span> 
+            <br />
+          PV6 - <span style="background-color: <%= $col_pv6 %>; color: #F5F5F5; padding: 1px 4px 1px 4px">M461101194AJ0</span> 
+        </td>
+
+        <td>
+          <img src="images/module_diagram.PNG" style="width: 60%;"\>
+        </td>
+      </tr>
+   
+    </table>
+
+  <br />
+
+  <div>
+
+    <% if @custom_msg.present? %>
+      <br />
+      <div id="custom_msg"><%= @custom_msg %></div>
+      <br />
+    <% end %>
+
+    <div class="pages_sub_titles">
+      <h3><%= @equip_fluke %></h3>
+
+      <div id="equip_stats">
+        <strong>First available log</strong>: <%= @first_fluke_time %> 
+          <br />
+        <strong>Last available log</strong>: 
+    
+        <!-- If logs are outdated, display in red -->
+        <% if @outdated_fluke %>
+
+          <span style="color: red;"><%= @last_fluke_time %> (Outdated)</span>
+
+        <% else %>
+          
+          <%= @last_fluke_time %> 
+        
+        <% end  %>
+      </div>
+
+    </div>
+
+  <%= form_tag documents_path, :method => 'get', :class => "form-inline" do %>  
+    <p>  
+      <%= text_field_tag :start_range, params[:start_range], value: @last_fluke_time.to_date.beginning_of_day.strftime('%B %d, %Y %I:%M %p'), class: "form-control input-sm" %>
+      to 
+      <%= text_field_tag :end_range, params[:end_range], value: @last_fluke_time, class: "form-control input-sm" %>
+      
+      <!-- Parameter to distinguish between two searches -->
+      <%= hidden_field_tag :request_fluke, "fluke" %>
+
+      <!-- Only logged in users are allowed to download -->
+      <% if logged_in? %>
+        <%= submit_tag "Download", :name => nil, class: "btn btn-sm" %>
+      <% else %>
+        <%= submit_tag "Download", :name => nil, class: "btn btn-sm", disabled: true %>
+      <% end %>
+
+    </p>
+  <% end %>
+
+  <div class="pages_sub_titles">
+    <h3><%= @equip_acm %></h3>
+
+    <div id="equip_stats">
+      <strong>First available log</strong>: <%= @first_acm300_time %> 
+        <br />
+      <strong>Last available log</strong>:
+
+        <!-- If logs are outdated, display in red -->
+        <% if @outdated_acm %>
+
+          <span style="color: red;"><%= @last_acm300_time %> (Outdated)</span>
+
+        <% else %>
+          
+          <%= @last_acm300_time %> 
+        
+        <% end  %>
+    </div>
+
+  <div>
+
+    <%= form_tag documents_path, :method => 'get', :class => "form-inline" do %> 
+
+      <!-- Buttons/parameter to distinguish between two searches -->
+      <div style="padding: 0px 0px 10px 0px;">
+        Format: 
+
+        <span style="padding: 0px 10px 0px 10px">
+          <%= radio_button_tag :acm_format, "acm_raw", true %> Raw CSV
+        </span>
+
+        <span style="padding: 0px 10px 0px 10px">
+          <%= radio_button_tag :acm_format, "acm_by_module", false %> Power Output Per Module
+        </span>
+      </div>
+      
+      <p>  
+        <%= text_field_tag :start_range, params[:start_range], value: @last_acm300_time.to_date.beginning_of_day.strftime('%B %d, %Y %H:%M %p'), class: "form-control input-sm" %>
+          to 
+        <%= text_field_tag :end_range, params[:end_range], value: @last_acm300_time, class: "form-control input-sm" %>
+
+
+        <!-- Only logged in users are allowed to download -->
+        <% if logged_in? %>
+          <%= submit_tag "Download", :name => nil, class: "btn btn-sm" %>
+        <% else %>
+          <%= submit_tag "Download", :name => nil, class: "btn btn-sm", disabled: true %>
+        <% end %> 
+
+      </p>
+
+      <% end %>
+
+    </div>
+
+  </div>
+
+</div>
+

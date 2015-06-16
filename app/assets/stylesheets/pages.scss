@@ -1,0 +1,100 @@
+// Place all the styles related to the pages controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+
+.pages_body {
+  background-color: #FCFCFC;
+  padding: 30px 0px 0px 10px;
+  position: relative;
+}
+
+.pages_sub_titles {
+  padding: 10px 0px 10px 0px;
+  position: relative;
+}
+
+.page_content {
+  padding: 10px 10px 30px 10px;
+}
+
+.doc_link {
+  padding: 5px 0px 5px 0px;
+  display: block
+}
+
+.doc_type {
+  color: #666;
+  font-size: 0.8em;
+  padding-left: 5px;
+}
+
+.graphs {
+  background-color: #FCFCFC;
+  width: 90%;
+  padding: 20px 0px 20px 0px;
+}
+
+#graph_nav {
+  padding: 0px 0px 0px 0px; 
+  width: 91%;
+}
+
+#equip_stats {
+  font-family: "Roboto";
+  padding: 0px 0px 10px 0px;
+}
+
+h2 h3 h4 {
+  font-family: "Roboto";
+}
+
+#zoom_msg {
+  color: #CCC;
+  font-size: 0.8em;
+  float: right;
+}
+
+.page_text_block{
+  text-align: justify;
+  width: 75%;
+}
+
+#kallio_img {
+  overflow: hidden;
+  height: 200px;
+  padding: 5px 5px 5px 5px;
+  margin: 20px 0px 10px 0px;
+  border: 1px solid #CCC;
+}
+
+#custom_msg {
+  text-align: center;
+  color: red;
+}
+
+#gallery {
+  padding: 10px 0px 10px 0px;
+  margin: auto;
+  position: relative;
+  display:inline-block;
+}
+
+.gallery_img {
+  width: 100%;
+  overflow: hidden;
+
+}
+
+.imageHolder {
+  border: 1px solid #CCC;
+  padding: 5px 5px 5px 5px;
+  margin: 20px 20px 20px 20px;
+  float: left;
+  width: 25%;
+}
+
+.caption {
+  padding: 2px 5px 2px 5px;
+  text-align: justify;
+  font-family: "Roboto";
+}

@@ -1,0 +1,5 @@
+option batch abort
+option confirm off
+open ftp://fluke_uploader:Chico12#@54.153.9.118
+put "C:\Fluke Hydra\Data\upload\*.*" "/"
+exit

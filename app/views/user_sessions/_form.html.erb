@@ -1,0 +1,18 @@
+<%= form_tag user_sessions_path, :class => "form-inline", :method => :post do %>
+  <div class="field">
+    <%= label_tag "Username" %><br />
+
+<!-- We store the username in email column since that is what sorcery uses -->
+
+    <%= text_field_tag :email %>
+  </div>
+  <br />
+  <div class="field">
+    <%= label_tag :password %><br />
+    <%= password_field_tag :password %>
+  </div>
+  <br />
+  <div class="actions">
+    <%= submit_tag "Login", class: "btn btn-sm" %>
+  </div>
+<% end %>

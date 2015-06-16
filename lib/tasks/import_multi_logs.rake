@@ -1,0 +1,198 @@
+namespace :import_multi_logs do
+  desc "Import multiple Fluke log files."
+  task import_fluke: :environment do
+
+    st = Time.now
+
+    puts ""
+    puts "[#{st.strftime('%B %d, %Y at %H:%M:%S  %p')}] Started Fluke Hydra multi log import..."
+    puts ""
+
+  	`ls /var/www/ocnl_solar_lab/tmp/fluke_log_uploads/`.split.each do |last_file|
+
+       in_file = "/var/www/ocnl_solar_lab/tmp/fluke_log_uploads/" + last_file
+
+        # Set temporary output file
+        out_file = Tempfile.new('temp_data.csv')
+
+        # We want to skip first 5 lines which have meta data from the logger.
+        line_count = 0
+
+        File.open(in_file , 'r').each do |f|
+
+          line_count += 1 # Track till 5th line
+
+          # Do not begin copying until 5th line
+          # Line 1 - 4 is meta data
+          if line_count < 5
+            next
+          end
+
+          # Begin copying lines
+          f.each_line{ |line|
+
+            # Convert encoding to valid UTF-8 for SmarterCSV
+            line = line.force_encoding("ISO-8859-1").encode("utf-8", replace: nil)
+
+            # Get rid of MalformedCSVError for Illegal quoting
+            line = line.gsub('"', '')
+
+            out_file.puts line # Dump to file
+          }
+
+        end
+
+        # Close file and rename as current data file
+        out_file.close
+        FileUtils.mv(out_file, "/var/www/ocnl_solar_lab/tmp/current_data.csv")
+
+        # Convert CSV data to Hash
+        log_hash = SmarterCSV.process("/var/www/ocnl_solar_lab/tmp/current_data.csv", \
+          :row_sep => "\n", :col_sep => ', ', :quote_char => '"', :downcase_header => true, \
+          :strip_whitespace => true, :strings_as_keys => true, :convert_values_to_numeric => false)
+
+        log_hash.each do |l|
+
+          ActiveRecord::Base.transaction do
+
+            Fluke.create(
+              log_time: Time.strptime(l["time"], "%m/%d/%Y %H:%M:%S"),
+              off: l["off"].to_i,
+              irr_py1: l["irr-py1"].to_f,
+              irr_py2: l["irr-py2"].to_f,
+              irr_rc1: l["irr-rc1"].to_f,
+              temp_rc1: l["temp-rc1"].to_f,
+              irr_rc2: l["irr-rc2"].to_f,
+              temp_rc2: l["temp-rc2"].to_f,
+              flowrate: l["flowrate"],
+              temp_pv1: l["temp-pv1"].to_f,
+              temp_pv2: l["temp-pv2"].to_f,
+              temp_pv3: l["temp-pv3"].to_f,
+              temp_pv4: l["temp-pv4"].to_f,
+              temp_pv5: l["temp-pv5"].to_f,
+              temp_pv6: l["temp-pv6"].to_f,
+              temp_hxi: l["temp-hxi"].to_f,
+              temp_hxo: l["temp-hxo"].to_f,
+              temp_amb: l["temp-amb"].to_f,
+              temp_bbox: l["temp-bbox"].to_f,
+              temp_bpst: l["temp-bpst"],
+              temp_wtt: l["temp-wtt"].to_f,
+              temp_wtb: l["temp-wtb"].to_f,
+              tempC: l["unused"],
+              total: l["total"].to_f,
+              dioalarm:  l["dioalarm"].to_i
+            )
+
+          end # Transaction ends
+
+        end # Hash ends
+
+        # Write to log
+        log = File.open("/var/www/ocnl_solar_lab/log/fluke_multi_import_log.log", "a")
+        log << "\n Imported '#{last_file}' at #{Time.now} \n"
+        puts "(Multi) Imported #{last_file} at #{Time.now}"
+
+       # Delete last log file upload
+       `sudo rm /var/www/ocnl_solar_lab/tmp/current_data.csv`
+       `sudo rm /var/www/ocnl_solar_lab/tmp/fluke_log_uploads/#{last_file}`
+
+    end
+
+  et = Time.now
+  t = ( et - st ).floor
+  puts "Import done! Time taken: #{t} seconds"
+
+  end # Fluke ends
+
+  desc "Import multiple ACM300 log files."
+  task import_acm: :environment do
+
+    require 'fileutils'
+    require 'date'
+    require 'time'
+
+    st = Time.now
+
+    puts ""
+    puts "[#{st.strftime('%B %d, %Y at %H:%M:%S %p')}] Started ACM300 multi log import..."
+    puts ""
+
+    `ls /var/www/ocnl_solar_lab/tmp/acm_uploads/`.split.each do |file|
+      in_file = "/var/www/ocnl_solar_lab/tmp/acm_uploads/" + file # Original file
+
+      # Set temporary output file
+      out_file = Tempfile.new('temp_data.csv')
+      final_file = "/var/www/ocnl_solar_lab/tmp/acm_temp_logs.log" # Final file
+
+      # Delete CSV header from first file
+      line_count = 0
+
+      File.open(in_file , 'r').each do |f|
+
+        line_count += 1 # Increment line count
+
+        # Begin copying lines
+        f.each_line{ |line|
+          next if line_count == 1 # Skip CSV header info on line 1
+          out_file.puts line # Dump to file
+        }
+      end
+
+      # Close file and rename as current data file
+      out_file.close
+      FileUtils.mv(out_file, final_file)
+
+      # Convert CSV data to Hash
+      log_hash = SmarterCSV.process(final_file, \
+        :row_sep => "\n", :col_sep => ', ', :downcase_header => true, \
+        :strip_whitespace => true, :strings_as_keys => true, :convert_values_to_numeric => false)
+
+      log_count = log_hash.count # Total count for this date
+
+      # Record the attempt to log ACM300 data
+      l = log_hash[0] # Select first log to grab datetime info
+      alog = File.open("/var/www/ocnl_solar_lab/log/acm_attempt_import.log", 'a')
+      alog << "Importing #{file}: #{log_hash.first["log_date"]} #{log_hash.first["log_time"]}         Count: #{log_count}         Timestamp: #{Time.now}\n"
+      alog.close
+
+      # Dump log data from file to Db
+      log_hash.each do |l|
+
+        # time header varies
+        log_time = l["time_(pst)"] || l["time_(pdt)"]
+        log_time = ( l["date"] + ' ' + log_time )
+
+        ActiveRecord::Base.transaction do
+
+          Acm300Log.create(
+            acm_module: l["module"],
+            log_date: l["date"],
+            log_time: log_time,
+            vin: l["vin_(v)"],
+            iin: l["iin_(a)"],
+            vout: l["vout_(v)"],
+            iout: l["iout_(a)"],
+            power: l["power_(w)"]
+          )
+
+        end # Transaction ends
+
+      end # File end
+
+      # Record a successful import
+      dt = l["date"].to_time.strftime('%B %d, %Y')
+      puts "Imported ACM300 log: #{dt}    Timestamp: #{Time.now}    Count: #{log_count}"
+
+      # Delete last log file upload
+      # `sudo rm /var/www/ocnl_solar_lab/tmp/acm_uploads/#{f}`
+      `sudo rm #{final_file}`
+
+    end # File loop ends
+
+    et = Time.now
+    t = ( et - st ).floor
+    puts "Import done! Time taken: #{t} seconds"
+ 
+  end # ACM ends
+
+end # Task ends
