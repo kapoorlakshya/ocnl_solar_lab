@@ -164,7 +164,7 @@ class PagesController < ApplicationController
           elsif acm_bymod # Power by module
 
             # Group them by minute so we can parse sensor data by minute            
-            found_acms = @acm_logs.group_by { |l| l.log_time.strftime( '%m/%d_%I:%M %p' ) }
+            found_acms = @acm_logs.group_by { |l| l.log_time.strftime( '%b %e %I:%M %p' ) }
 
             # Transpose rows to column to dsiplay power value per module
             @acm_logs = Hash.new # Hash to store the transposed data
@@ -330,17 +330,17 @@ class PagesController < ApplicationController
     # Search data from start to end range and group by hour or minute
     # ---------------------------------------------------------------
 
-    # Search fluke data with 1 minute extra since there is a 1 min delay betwen
+    # Search fluke data with 1 minute extra since there is a 1 min delay between
     # the upload and the rake task pushing to the DB
     data_flukes = Fluke.where(log_time: start_time..(end_time + (1*60))) \
-      .group_by { |fluke| fluke.log_time.strftime( '%I:00 %p' ) }
+      .group_by { |fluke| fluke.log_time.strftime( '%b %e %I:00 %p' ) }
 
     # Search ACM data
     data_acms = Acm300Log.select("log_time, acm_module, power"). \
                             where(log_date: start_date..end_date, \
                                   log_time: acm_st..acm_et) \
                             .order('log_time ASC') \
-                            .group_by { |l| l.log_time.strftime( '%I:%M %p' ) }
+                            .group_by { |l| l.log_time.strftime( '%b %e %I:%M %p' ) }
 
     # Use user defined times to display in the search fields
     # Fluke and ACM will have same datetime range 
@@ -476,7 +476,7 @@ class PagesController < ApplicationController
     data_acms = Acm300Log.where(log_date: start_date..end_date, \
                                   log_time: start_time..end_time ) \
                           .order('log_time ASC') \
-      .group_by { |l| l.log_time.strftime( '%m/%d_%I:%M %p' ) }
+      .group_by { |l| l.log_time.strftime( '%b %e %I:%M %p' ) }
 
     # Transpose rows to column to dsiplay power value per module
     @acm_logs = Hash.new # Hash to store the transposed data
@@ -507,7 +507,7 @@ class PagesController < ApplicationController
         m = l.acm_module # Module name
 
         # Add up all power values for this minute
-        mod_data[:total_pow] += pow.round(@rnd)
+        mod_data[:total_pow] += pow
 
         # Overwrite Module's (key) value with actual data
         mod_data.store( m, pow )
@@ -740,7 +740,7 @@ class PagesController < ApplicationController
       break if !cur # No data available for this range
 
       t = Time.at( ( cur.first.log_time.to_time.to_i / \
-          (@minter * 60) ) * (@minter * 60) ).to_time.strftime("%I:%M %p")
+          (@minter * 60) ) * (@minter * 60) ).to_time.strftime("%b %e %I:%M %p")
 
       acm_time_arr.push t # Store time
 
@@ -776,6 +776,7 @@ class PagesController < ApplicationController
   end
     
   def acm_powerout_chart(acm_pv1, acm_pv2, acm_pv3, acm_pv4, acm_pv5, acm_pv6, acm_time_arr)
+
     chart = LazyHighCharts::HighChart.new('graph') do |f|
         f.chart({:zoomType =>'x', backgroundColor: $col_back, height: $chart_ht})
 
@@ -813,6 +814,7 @@ class PagesController < ApplicationController
   end
 
   def acm_pow_total_chart(acm_pow_total, acm_time_arr)
+
     chart = LazyHighCharts::HighChart.new('graph') do |f|
         f.chart({:zoomType =>'x', backgroundColor: $col_back, height: $chart_ht})
 
@@ -842,6 +844,7 @@ class PagesController < ApplicationController
   end
 
   def pv_temp_chart(avg_pv1, avg_pv2, avg_pv3, avg_pv4, avg_pv5, avg_pv6, avg_amb, fluke_time_arr)
+
     chart = LazyHighCharts::HighChart.new('graph') do |f|
         f.chart({:zoomType =>'x', backgroundColor: $col_back, height: $chart_ht})
 
@@ -877,6 +880,7 @@ class PagesController < ApplicationController
   end
 
   def irr_chart(avg_py1, avg_py2, avg_rcell1, avg_rcell2, fluke_time_arr)
+
     chart = LazyHighCharts::HighChart.new('graph') do |f|
         f.chart({:zoomType =>'x', backgroundColor: $col_back, height: $chart_ht})
         f.title({ :text=>"Solar Irradiance"})
@@ -907,6 +911,7 @@ class PagesController < ApplicationController
   end
 
   def wtemp_flowrate_chart(avg_hxi, avg_hxo, avg_wtt, avg_wtb, avg_amb, avg_flowrate, fluke_time_arr)
+
     chart = LazyHighCharts::HighChart.new('graph') do |f|
         f.chart({:zoomType =>'x', backgroundColor: $col_back, height: $chart_ht})
         f.title({ :text=>"Water Temperature and Flowrate"})
@@ -939,6 +944,7 @@ class PagesController < ApplicationController
   end
 
   def bat_box_chart(avg_bbox, avg_bpst, avg_amb, fluke_time_arr)
+
     chart = LazyHighCharts::HighChart.new('graph') do |f|
         f.chart({:zoomType =>'x', backgroundColor: $col_back, height: $chart_ht})
         f.title({ :text=>"Battery Box Temperature"})
