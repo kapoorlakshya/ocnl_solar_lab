@@ -309,7 +309,7 @@ class PagesController < ApplicationController
       @custom_msg = "Very clever! You need to be logged in to search."
 
       start_date, end_date, start_time, end_time, acm_st, acm_et \
-        = set_default_dates()
+        = set_graph_dates()
 
     elsif params[:start_range].present? and params[:end_range].present?
 
@@ -319,7 +319,7 @@ class PagesController < ApplicationController
     else # Show last available data from 7am to 7pm
 
       start_date, end_date, start_time, end_time, acm_st, acm_et \
-        = set_default_dates()
+        = set_graph_dates()
 
     end
 
@@ -347,15 +347,15 @@ class PagesController < ApplicationController
     @search_start_dt = start_time.strftime('%B %d, %Y %I:%M %p')
     @search_end_dt = end_time.strftime('%B %d, %Y %I:%M %p')
 
+    prd = (end_date - start_date).to_i
+
     # Display date for the graphs
     if data_flukes.present?
-      @fluke_disp_date = data_flukes[data_flukes.keys.first].first[:log_time]. \
-                        strftime('%B %d, %Y')
+      @fluke_disp_date = set_display_dates(start_date, end_date)
     end
 
     if data_acms.present?
-      @acm_disp_date = data_acms[data_acms.keys.first].first[:log_time]. \
-                      strftime('%B %d, %Y')
+      @acm_disp_date = set_display_dates(start_date, end_date)
     end
 
     # Store data for Fluke graphs
@@ -381,13 +381,17 @@ class PagesController < ApplicationController
     avg_flowrate = []
     fluke_time_arr = [] # Store timestamps
 
+    # Show time only for plot from same day.
+    # Show date and time for a multi-date plot.
+    xaxis_time_fmt = time_format_by_period(start_date, end_date)
+
     # RC1 and 2 are not required by Dr. Kallio
 
     avg_py1, avg_py2, avg_rcell1, avg_rcell2, \
     avg_pv1, avg_pv2, avg_pv2, avg_pv3, avg_pv4, \
     avg_pv5, avg_pv6, avg_hxi, avg_hxo, avg_wtt, \
     avg_wtb, avg_bbox, avg_bpst, avg_amb, avg_flowrate, \
-    fluke_time_arr = generate_fluke_data(data_flukes) # Set fluke data
+    fluke_time_arr = generate_fluke_data(data_flukes, xaxis_time_fmt) # Set fluke data
 
     # Store data for ACM graps
     # ------------------------------------------------
@@ -407,7 +411,7 @@ class PagesController < ApplicationController
     # --------------------------
 
     acm_pv1, acm_pv2, acm_pv3, acm_pv4, acm_pv5, acm_pv6, \
-      acm_pow_total, acm_time_arr = generate_acm_data(data_acms) # Set acm data
+      acm_pow_total, acm_time_arr = generate_acm_data(data_acms, xaxis_time_fmt) # Set acm data
 
     # Setup graphs
     # ------------
@@ -567,7 +571,7 @@ class PagesController < ApplicationController
 
   end
 
-  def set_default_dates()
+  def set_graph_dates()
 
     time_now = Time.now # Current time
 
@@ -611,7 +615,23 @@ class PagesController < ApplicationController
 
   end
 
-  def generate_fluke_data(data_hash)
+  def set_display_dates(start_date, end_date)
+
+    prd = (end_date - start_date).to_i
+
+    # Display date for the graphs
+    if prd == 0
+      return start_date.strftime('%B %d, %Y')
+    else
+      s = start_date.strftime('%B %d, %Y')
+      e = end_date.strftime('%B %d, %Y')
+
+      return "#{s} - #{e}"
+    end
+
+  end
+
+  def generate_fluke_data(data_hash, xaxis_time_fmt)
 
     # Variables to store Fluke values to display on chart
     avg_py1 = []
@@ -682,7 +702,7 @@ class PagesController < ApplicationController
 
         # Store time for graph. Round to every @minter mins.
         t = Time.at( ( data_hash[k][ind][:log_time].to_time.to_i / \
-          (@minter * 60) ) * (@minter * 60) ).to_time.strftime("%I:%M %p")
+          (@minter * 60) ) * (@minter * 60) ).to_time.strftime(xaxis_time_fmt)
 
         fluke_time_arr.push t
 
@@ -698,9 +718,24 @@ class PagesController < ApplicationController
 
   end
 
+  def time_format_by_period(start_date, end_date)
+
+    period = (end_date - start_date).to_i
+
+    # Only show time for a plot from same day.
+    if period == 0
+      fmt = "%I:%M %p"
+    else # Show date with time for multi-date plots
+      fmt = "%b %e %I:%M %p"
+    end
+
+    return fmt
+
+  end
+
   def sanitize_fluke_data(val)
 
-    if val.to_f > 1000 # Clean out bad values
+    if val.to_f > 1000 # Replace out bad values
       return 0.0
     else
       return val.to_f
@@ -708,7 +743,7 @@ class PagesController < ApplicationController
 
   end
 
-  def generate_acm_data(data_hash)
+  def generate_acm_data(data_hash, xaxis_time_fmt)
 
     # PV Module mapping
     # M421101006AJB - PV1
@@ -740,7 +775,7 @@ class PagesController < ApplicationController
       break if !cur # No data available for this range
 
       t = Time.at( ( cur.first.log_time.to_time.to_i / \
-          (@minter * 60) ) * (@minter * 60) ).to_time.strftime("%b %e %I:%M %p")
+          (@minter * 60) ) * (@minter * 60) ).to_time.strftime(xaxis_time_fmt)
 
       acm_time_arr.push t # Store time
 
