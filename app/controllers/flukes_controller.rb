@@ -3,6 +3,8 @@ require 'chronic'
 class FlukesController < ApplicationController
   before_action :set_fluke, only: [:show, :edit, :update, :destroy]
 
+  include ApplicationHelper
+
   # GET /flukes
   # GET /flukes.json
   def index

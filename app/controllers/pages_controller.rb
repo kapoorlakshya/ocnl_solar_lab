@@ -1,5 +1,7 @@
 class PagesController < ApplicationController
 
+  include ApplicationHelper
+
   $rnd = 5 # Round values to this place
 
   # COLOR GLOBALS 
@@ -37,35 +39,6 @@ class PagesController < ApplicationController
 
   $clr_pow_toal = '#FF6138'
 
-    def color_by_module(m)
-
-    # Module colors
-    clr_pv1 = '#1F3473'
-    clr_pv2 = '#825534'
-    clr_pv3 = '#D93250'
-    clr_pv4 = '#6A9AD9'
-    clr_pv5 = '#D94625'
-    clr_pv6 = '#00A388'
-
-    case m
-    when "M421101006AJB"
-      return clr_pv1
-    when "M431101063AJA"
-      return clr_pv2
-    when "M431101029AJ2"
-      return clr_pv3
-    when "M461101120AJF"
-      return clr_pv4
-    when "M461101053AJ8"
-      return clr_pv5
-    when "M461101194AJ0"
-      return clr_pv6
-    end
-
-  end
-
-  helper_method :color_by_module  
-  
 
   def documents_and_downloads
 
