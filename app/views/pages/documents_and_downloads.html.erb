@@ -1,5 +1,5 @@
 <div class="pages_body">
-  <h1>// Documents</h1>
+  <h1>// Documents & Downloads</h1>
 </div>
 
 <% if alert %>
@@ -40,36 +40,59 @@
     <span class="doc_type">PDF / 109 KB</span>
   </span>
 
+  <span class="doc_link">
+    <%= link_to "Fluke DAQ Information", "documents/Fluke_DAQ_Information.docx", :target => "_blank" %>
+    <span class="doc_type">DOCX / 20 KB</span>
+  </span>
+
   <div class="pages_sub_titles">
     <h3>Module Map</h3>
 
-    <table>
+<!--     <table>
       <tr>
         <td>
-          PV1 - <span style="background-color: <%= $col_pv1 %>; color: #F5F5F5; padding: 1px 4px 1px 4px">M421101006AJB</span>
+          PV1 - <span style="background-color: <%= $clr_pv1 %>; color: #F5F5F5; padding: 1px 4px 1px 4px">M421101006AJB</span>
             <br />
-          PV2 - <span style="background-color: <%= $col_pv2 %>; color: #F5F5F5; padding: 1px 4px 1px 4px">M431101063AJA</span> 
+          PV2 - <span style="background-color: <%= $clr_pv2 %>; color: #F5F5F5; padding: 1px 4px 1px 4px">M431101063AJA</span> 
             <br />
-          PV3 - <span style="background-color: <%= $col_pv3 %>; color: #F5F5F5; padding: 1px 4px 1px 4px">M431101029AJ2</span> 
+          PV3 - <span style="background-color: <%= $clr_pv3 %>; color: #F5F5F5; padding: 1px 4px 1px 4px">M431101029AJ2</span> 
             <br />
-          PV4 - <span style="background-color: <%= $col_pv4 %>; color: #F5F5F5; padding: 1px 4px 1px 4px">M461101120AJF</span> 
+          PV4 - <span style="background-color: <%= $clr_pv4 %>; color: #F5F5F5; padding: 1px 4px 1px 4px">M461101120AJF</span> 
             <br />
-          PV5 - <span style="background-color: <%= $col_pv5 %>; color: #F5F5F5; padding: 1px 4px 1px 4px">M461101053AJ8</span> 
+          PV5 - <span style="background-color: <%= $clr_pv5 %>; color: #F5F5F5; padding: 1px 4px 1px 4px">M461101053AJ8</span> 
             <br />
-          PV6 - <span style="background-color: <%= $col_pv6 %>; color: #F5F5F5; padding: 1px 4px 1px 4px">M461101194AJ0</span> 
+          PV6 - <span style="background-color: <%= $clr_pv6 %>; color: #F5F5F5; padding: 1px 4px 1px 4px">M461101194AJ0</span> 
         </td>
 
         <td>
           <img src="images/module_diagram.PNG" style="width: 60%;"\>
         </td>
+      </tr>  
+    </table> -->
+
+    <table id="pv_map_table">
+      <tr>
+        <td class="pv_map_td" style="background-color: <%= $clr_pv1 %>; color: #F5F5F5;">M421101006AJB <br /> (PV1)</td>
+        <td class="pv_map_td" style="background-color: <%= $clr_pv2 %>; color: #F5F5F5;">M431101063AJA <br /> (PV2)</td>
+      </tr> 
+
+      <tr>
+        <td class="pv_map_td" style="background-color: <%= $clr_pv3 %>; color: #F5F5F5;">M431101029AJ2 <br /> (PV3)</td>
+        <td class="pv_map_td" style="background-color: <%= $clr_pv4 %>; color: #F5F5F5;">M461101120AJF <br /> (PV4)</td>
       </tr>
-   
+
+      <tr>
+        <td class="pv_map_td" style="background-color: <%= $clr_pv5 %>; color: #F5F5F5;">M461101053AJ8 <br /> (PV5)</td>
+        <td class="pv_map_td" style="background-color: <%= $clr_pv6 %>; color: #F5F5F5;">M461101194AJ0 <br /> (PV6)</td>
+      </tr>
+
     </table>
 
   <br />
 
   <div>
 
+  <!-- Display custom error or info message -->
     <% if @custom_msg.present? %>
       <br />
       <div id="custom_msg"><%= @custom_msg %></div>
@@ -98,7 +121,7 @@
 
     </div>
 
-  <%= form_tag documents_path, :method => 'get', :class => "form-inline" do %>  
+  <%= form_tag documents_and_downloads_path, :method => 'get', :class => "form-inline" do %>  
     <p>  
       <%= text_field_tag :start_range, params[:start_range], value: @last_fluke_time.to_date.beginning_of_day.strftime('%B %d, %Y %I:%M %p'), class: "form-control input-sm" %>
       to 
@@ -139,7 +162,7 @@
 
   <div>
 
-    <%= form_tag documents_path, :method => 'get', :class => "form-inline" do %> 
+    <%= form_tag documents_and_downloads_path, :method => 'get', :class => "form-inline" do %> 
 
       <!-- Buttons/parameter to distinguish between two searches -->
       <div style="padding: 0px 0px 10px 0px;">

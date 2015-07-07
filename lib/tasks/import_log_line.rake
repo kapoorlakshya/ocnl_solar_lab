@@ -51,8 +51,8 @@ namespace :import_log_line do
 
     end # Transaction ends
 
-    # Record a successful import to log/cron_log.log
-    puts "Imported Fluke Log Line: #{log_hash.first["time"]}        Timestamp: #{Time.now}\n"
+    # Record a successful import to log/cron_log.log - FOR DEBUGGING ONLY
+    # puts "Imported Fluke Log Line: #{log_hash.first["time"]}        Timestamp: #{Time.now}\n"
 
    # Delete last log file upload
    `sudo rm #{in_file}`

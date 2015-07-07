@@ -51,7 +51,11 @@
   <tbody>
     <% @acm_logs.each do |acm| %>
       <tr>
-        <td scope="row"><%= acm.acm_module %></td>
+        <td scope="row" style="color: <%= color_by_module(acm.acm_module) %>">
+          <%= acm.acm_module %>
+          <span class="module_label_small"> <%= label_by_module(acm.acm_module) %> </span>
+        </td>
+        
         <td scope="row">
           <% if acm.log_time == Date.today  %>
           <% else %>
@@ -60,11 +64,11 @@
           
           <%= acm.log_time.strftime('%I:%M %p') %>
         </td>
-        <td scope="row"><%= acm.vin.round(4) %></td>
-        <td scope="row"><%= acm.iin.round(4) %></td>
-        <td scope="row"><%= acm.vout.round(4) %></td>
-        <td scope="row"><%= acm.iout.round(4) %></td>
-        <td scope="row"><%= acm.power.round(4) %></td>
+        <td scope="row"><%= acm.vin.round(@rnd) %></td>
+        <td scope="row"><%= acm.iin.round(@rnd) %></td>
+        <td scope="row"><%= acm.vout.round(@rnd) %></td>
+        <td scope="row"><%= acm.iout.round(@rnd) %></td>
+        <td scope="row"><%= acm.power.round(@rnd) %></td>
       </tr>
     <% end %>
   </tbody>

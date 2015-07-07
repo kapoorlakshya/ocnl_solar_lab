@@ -15,7 +15,7 @@ Rails.application.routes.draw do
   get 'login' => 'user_sessions#new', :as => :login
   get 'logout' => 'user_sessions#destroy', :as => :logout
   get '/graphs' => 'pages#graphs'
-  get '/documents' => 'pages#documents'
+  get '/documents_and_downloads' => 'pages#documents_and_downloads'
   get '/about' => 'pages#about'
   get '/gallery' => 'pages#gallery'
   get '/contact' => 'pages#contact'

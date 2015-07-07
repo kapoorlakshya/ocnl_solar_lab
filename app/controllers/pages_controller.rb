@@ -2,7 +2,72 @@ class PagesController < ApplicationController
 
   $rnd = 5 # Round values to this place
 
-  def documents
+  # COLOR GLOBALS 
+  # ----------------
+
+  # Graph line and module map color mapping
+  $clr_back = '#FCFCFC'
+
+  # Graph line colors
+  $clr_pv1 = '#1F3473'
+  $clr_pv2 = '#825534'
+  $clr_pv3 = '#D93250'
+  $clr_pv4 = '#6A9AD9'
+  $clr_pv5 = '#D94625'
+  $clr_pv6 = '#00A388'
+
+  $clr_amb = '#B40404'
+
+  $clr_py1 = '#FFBF00'
+  $clr_py2 = '#DF5A49'
+
+  $clr_refcell1 = '#A1C43A'
+  $clr_refcell2 = '#0558A3'
+
+  $clr_hxi = '#AD5472'
+  $clr_hxo = '#FF6138'
+
+  $clr_wtt = '#C77966'
+  $clr_wtb = '#77C4D3'
+
+  $clr_bbox = '#0A93BA'
+  $clr_bpst = '#94B74E'
+
+  $clr_flowrate = '#0558A3'
+
+  $clr_pow_toal = '#FF6138'
+
+    def color_by_module(m)
+
+    # Module colors
+    clr_pv1 = '#1F3473'
+    clr_pv2 = '#825534'
+    clr_pv3 = '#D93250'
+    clr_pv4 = '#6A9AD9'
+    clr_pv5 = '#D94625'
+    clr_pv6 = '#00A388'
+
+    case m
+    when "M421101006AJB"
+      return clr_pv1
+    when "M431101063AJA"
+      return clr_pv2
+    when "M431101029AJ2"
+      return clr_pv3
+    when "M461101120AJF"
+      return clr_pv4
+    when "M461101053AJ8"
+      return clr_pv5
+    when "M461101194AJ0"
+      return clr_pv6
+    end
+
+  end
+
+  helper_method :color_by_module  
+  
+
+  def documents_and_downloads
 
     @rnd = $rnd # Round values
 
@@ -29,8 +94,8 @@ class PagesController < ApplicationController
 
     if !logged_in? and params[:start_range].present?
 
-      # This is the only check preventing the user to pass parameters
-      # via address bar to search without logging in.
+      # This is to disallow the user to pass parameters
+      # via address bar and excercise search without logging in.
 
       @custom_msg = "Very clever! You need to be logged in to search."
 
@@ -48,14 +113,14 @@ class PagesController < ApplicationController
 
       end
 
-      # Everything is going as expected if we have reached here. We have a sensible user here!
+      # Everything is going as expected if we have reached here.
 
       # Only one will be set to true to serve a single file at a time.
       fluke_raw = false
       acm_raw = false
       acm_bymod = false
 
-      # Which equipment and format to serve?
+      # Which equipment and format to serve? The params below are hidden in the form.
       fluke_raw = true if params[:request_fluke].present?
       acm_raw = true if ( params[:acm_format].present? and params[:acm_format].include? "acm_raw" )
       acm_bymod = true if ( params[:acm_format].present? and params[:acm_format].include? "module" )
@@ -81,12 +146,10 @@ class PagesController < ApplicationController
       file = "#{loc}/fluke_raw_#{s}_#{e}_#{str}.csv" if fluke_raw
       file = "#{loc}/acm_acm_raw_#{s}_#{e}_#{str}.csv" if acm_raw
       file = "#{loc}/acm_power_by_module_#{s}_#{e}_#{str}.csv" if acm_bymod
-      `touch #{file}`
+      # `touch #{file}`
 
-      # Open file
+      # Create and open file
       out_file = File.new(file, "w+")
-
-
 
       # Serve Fluke Hydra data
       # -----------------------
@@ -194,10 +257,12 @@ class PagesController < ApplicationController
                 pow = l.power # Power
                 m = l.acm_module # Module name
 
-                mod_data[:total_pow] += pow.round(@rnd)
+                mod_data[:total_pow] += pow.round(@rnd)   
 
-                # Overwrite Module's (key) value with actual data
-                mod_data.store( m, pow )
+                # Overwrite Module's (key's) value with actual data only if they are 0.0
+                # Do not overwrite valid values with 0.0 which is due to a bug in ACM
+                # where it repeats a module with values as 0.0 
+                mod_data.store( m, pow ) if mod_data[m] == 0.0 
 
               end
 
@@ -242,40 +307,6 @@ class PagesController < ApplicationController
 
   end # documents method ends
 
-  # COLOR GLOBALS 
-  # ----------------
-
-  # Graph background color mapping
-  $col_back = '#FCFCFC'
-
-  # Graph line colors
-  $col_pv1 = '#1F3473'
-  $col_pv2 = '#825534'
-  $col_pv3 = '#D93250'
-  $col_pv4 = '#6A9AD9'
-  $col_pv5 = '#D94625'
-  $col_pv6 = '#00A388'
-
-  $col_amb = '#B40404'
-
-  $col_py1 = '#45B29D'
-  $col_py2 = '#DF5A49'
-
-  $col_refcell1 = '#A1C43A'
-  $col_refcell2 = '#0558A3'
-
-  $col_hxi = '#AD5472'
-  $col_hxo = '#FF6138'
-
-  $col_wtt = '#C77966'
-  $col_wtb = '#77C4D3'
-
-  $col_bbox = '#0A93BA'
-  $col_bpst = '#94B74E'
-
-  $col_flowrate = '#0558A3'
-
-  $col_pow_toal = '#FF6138'
 
   # Chart height
   $chart_ht = nil
@@ -296,7 +327,6 @@ class PagesController < ApplicationController
     # Minute interval. Default: 30 Minutes
     params[:minter].to_i > 0 ? @minter = params[:minter].to_i : @minter = 30 
 
-
     # Graph based on search param or last available day
     # Default: Last available log date and time for each
     # ---------------------------------------------------
@@ -309,7 +339,7 @@ class PagesController < ApplicationController
       @custom_msg = "Very clever! You need to be logged in to search."
 
       start_date, end_date, start_time, end_time, acm_st, acm_et \
-        = set_graph_dates()
+        = set_default_graph_dates()
 
     elsif params[:start_range].present? and params[:end_range].present?
 
@@ -319,7 +349,7 @@ class PagesController < ApplicationController
     else # Show last available data from 7am to 7pm
 
       start_date, end_date, start_time, end_time, acm_st, acm_et \
-        = set_graph_dates()
+        = set_default_graph_dates()
 
     end
 
@@ -332,8 +362,8 @@ class PagesController < ApplicationController
 
     # Search fluke data with 1 minute extra since there is a 1 min delay between
     # the upload and the rake task pushing to the DB
-    data_flukes = Fluke.where(log_time: start_time..(end_time + (1*60))) \
-      .group_by { |fluke| fluke.log_time.strftime( '%b %e %I:00 %p' ) }
+    data_flukes = Fluke.where(log_time: (start_time + 1*60)..(end_time + 1*60)) \
+                  .group_by { |fluke| fluke.log_time.strftime( '%b %e %I:00 %p' ) }
 
     # Search ACM data
     data_acms = Acm300Log.select("log_time, acm_module, power"). \
@@ -347,19 +377,20 @@ class PagesController < ApplicationController
     @search_start_dt = start_time.strftime('%B %d, %Y %I:%M %p')
     @search_end_dt = end_time.strftime('%B %d, %Y %I:%M %p')
 
-    prd = (end_date - start_date).to_i
-
     # Display date for the graphs
-    if data_flukes.present?
-      @fluke_disp_date = set_display_dates(start_date, end_date)
-    end
+    @fluke_disp_date = set_display_dates(start_time.to_date, end_time.to_date)
+    @acm_disp_date = set_display_dates(start_date, end_date)
 
-    if data_acms.present?
-      @acm_disp_date = set_display_dates(start_date, end_date)
-    end
+    # We use start and end time instead of dates for @fluke_disp_date because
+    # start and end_date is -1 day for ACM's sake whereas the start_time and end_time
+    # store current date. 
 
-    # Store data for Fluke graphs
+
+    # STORE DATA FOR FLUKE GRAPHS
     # -----------------------------
+
+
+
     avg_py1 = []
     avg_py2 = []
     avg_rcell1 = []
@@ -381,7 +412,7 @@ class PagesController < ApplicationController
     avg_flowrate = []
     fluke_time_arr = [] # Store timestamps
 
-    # Show time only for plot from same day.
+    # Show only time for plot from same day.
     # Show date and time for a multi-date plot.
     xaxis_time_fmt = time_format_by_period(start_date, end_date)
 
@@ -393,8 +424,13 @@ class PagesController < ApplicationController
     avg_wtb, avg_bbox, avg_bpst, avg_amb, avg_flowrate, \
     fluke_time_arr = generate_fluke_data(data_flukes, xaxis_time_fmt) # Set fluke data
 
-    # Store data for ACM graps
-    # ------------------------------------------------
+
+
+    # STORE DATA FOR ACM GRAPHS
+    # ------------------------
+
+
+
     acm_time_arr = [] # Store timestamps
     pow_hash = {} # Hash map to store powers per module per minute iteration
 
@@ -423,7 +459,6 @@ class PagesController < ApplicationController
 
     @pv_temp_chart = pv_temp_chart(avg_pv1, avg_pv2, avg_pv3, avg_pv4, \
       avg_pv5, avg_pv6, avg_amb, fluke_time_arr)
-
 
     @irr_chart = irr_chart(avg_py1, avg_py2, avg_rcell1, avg_rcell2, \
       fluke_time_arr)
@@ -507,14 +542,16 @@ class PagesController < ApplicationController
 
       data_acms[key].each do |l| # Get logs for the minute
 
-        pow = l.power.round(@rnd) # Round to 4 decimal places
+        pow = l.power.round(@rnd) # Round to @rnd decimal places
         m = l.acm_module # Module name
 
         # Add up all power values for this minute
         mod_data[:total_pow] += pow
 
-        # Overwrite Module's (key) value with actual data
-        mod_data.store( m, pow )
+        # Overwrite Module's (key's) value with actual data only if they are 0.0
+        # Do not overwrite valid values with 0.0 which is due to a bug in ACM
+        # where it repeats a module with values as 0.0 
+        mod_data.store( m, pow ) if mod_data[m] == 0.0 
 
       end
 
@@ -571,7 +608,7 @@ class PagesController < ApplicationController
 
   end
 
-  def set_graph_dates()
+  def set_default_graph_dates()
 
     time_now = Time.now # Current time
 
@@ -671,7 +708,7 @@ class PagesController < ApplicationController
         avg_rcell1.push data_hash[k][ind][:irr_rc1].to_f
         avg_rcell2.push data_hash[k][ind][:irr_rc2].to_f
 
-        # Gather RC data
+        # Gather RC data - Not wanted by Dr. Kallio
         # avg_rc1.push data_hash[k][ind][:temp_rc1].to_f
         # avg_rc2.push data_hash[k][ind][:temp_rc2].to_f
 
@@ -687,6 +724,7 @@ class PagesController < ApplicationController
         avg_hxi.push sanitize_fluke_data( data_hash[k][ind][:temp_hxi] )
         avg_hxo.push sanitize_fluke_data( data_hash[k][ind][:temp_hxo] )
 
+        # Water
         avg_flowrate.push sanitize_fluke_data( data_hash[k][ind][:flowrate] )
 
         # Tank data
@@ -726,7 +764,7 @@ class PagesController < ApplicationController
     if period == 0
       fmt = "%I:%M %p"
     else # Show date with time for multi-date plots
-      fmt = "%b %e %I:%M %p"
+      fmt = "%b %e, %I:%M %p"
     end
 
     return fmt
@@ -770,9 +808,9 @@ class PagesController < ApplicationController
 
     ( 0..keys.length ).step( @minter ).each do |ind| # Grab @minter minute keys only
 
-      cur = data_hash.values[ind] # Current key
+      cur = data_hash.values[ind] # Current key value pair at @minter minute
 
-      break if !cur # No data available for this range
+      next if !cur # No data available for this range
 
       t = Time.at( ( cur.first.log_time.to_time.to_i / \
           (@minter * 60) ) * (@minter * 60) ).to_time.strftime(xaxis_time_fmt)
@@ -783,8 +821,7 @@ class PagesController < ApplicationController
         m = l.acm_module
         pow = l.power
 
-        pow_hash.store( m, pow ) # Push power values by module (key)
-
+        pow_hash.store( m, pow ) # Push module name and power value to hash
       end
 
       # Push value in appropriate module's array. Push 0 if no power value is available.
@@ -813,7 +850,7 @@ class PagesController < ApplicationController
   def acm_powerout_chart(acm_pv1, acm_pv2, acm_pv3, acm_pv4, acm_pv5, acm_pv6, acm_time_arr)
 
     chart = LazyHighCharts::HighChart.new('graph') do |f|
-        f.chart({:zoomType =>'x', backgroundColor: $col_back, height: $chart_ht})
+        f.chart({:zoomType =>'x', backgroundColor: $clr_back, height: $chart_ht})
 
         f.title({ :text=>"DC Power Output by Module"})
 
@@ -836,12 +873,12 @@ class PagesController < ApplicationController
                 layout:'horizontal', 
                 itemDistance: 30)
         
-        f.series( name: 'PV1', data: acm_pv1, color: $col_pv1)
-        f.series( name: 'PV2', data: acm_pv2, color: $col_pv2)
-        f.series( name: 'PV3', data: acm_pv3, color: $col_pv3)
-        f.series( name: 'PV4', data: acm_pv4, color: $col_pv4)
-        f.series( name: 'PV5', data: acm_pv5, color: $col_pv5)
-        f.series( name: 'PV6', data: acm_pv6, color: $col_pv6)
+        f.series( name: 'PV1', data: acm_pv1, color: $clr_pv1)
+        f.series( name: 'PV2', data: acm_pv2, color: $clr_pv2)
+        f.series( name: 'PV3', data: acm_pv3, color: $clr_pv3)
+        f.series( name: 'PV4', data: acm_pv4, color: $clr_pv4)
+        f.series( name: 'PV5', data: acm_pv5, color: $clr_pv5)
+        f.series( name: 'PV6', data: acm_pv6, color: $clr_pv6)
       end
 
     return chart
@@ -851,7 +888,7 @@ class PagesController < ApplicationController
   def acm_pow_total_chart(acm_pow_total, acm_time_arr)
 
     chart = LazyHighCharts::HighChart.new('graph') do |f|
-        f.chart({:zoomType =>'x', backgroundColor: $col_back, height: $chart_ht})
+        f.chart({:zoomType =>'x', backgroundColor: $clr_back, height: $chart_ht})
 
         f.title({ :text=>"Total DC Power Output"})
 
@@ -871,7 +908,7 @@ class PagesController < ApplicationController
                 itemDistance: 30)
         
         f.series( name: 'Total Power Output (W)', data: acm_pow_total, 
-                  color: $col_pow_toal)
+                  color: $clr_pow_toal)
       end 
 
     return chart
@@ -881,7 +918,7 @@ class PagesController < ApplicationController
   def pv_temp_chart(avg_pv1, avg_pv2, avg_pv3, avg_pv4, avg_pv5, avg_pv6, avg_amb, fluke_time_arr)
 
     chart = LazyHighCharts::HighChart.new('graph') do |f|
-        f.chart({:zoomType =>'x', backgroundColor: $col_back, height: $chart_ht})
+        f.chart({:zoomType =>'x', backgroundColor: $clr_back, height: $chart_ht})
 
         f.title({ :text=>"Module Temperature vs. Time of Day"})
 
@@ -900,13 +937,13 @@ class PagesController < ApplicationController
                 layout:'horizontal', 
                 itemDistance: 30)
 
-        f.series( name: 'PV1', data: avg_pv1, color: $col_pv1)
-        f.series( name: 'PV2', data: avg_pv2, color: $col_pv2)
-        f.series( name: 'PV3', data: avg_pv3, color: $col_pv3)
-        f.series( name: 'PV4', data: avg_pv4, color: $col_pv4)
-        f.series( name: 'PV5', data: avg_pv5, color: $col_pv5)
-        f.series( name: 'PV6', data: avg_pv6, color: $col_pv6)
-        f.series( name: 'Ambient', data: avg_amb, color: $col_amb)
+        f.series( name: 'PV1', data: avg_pv1, color: $clr_pv1)
+        f.series( name: 'PV2', data: avg_pv2, color: $clr_pv2)
+        f.series( name: 'PV3', data: avg_pv3, color: $clr_pv3)
+        f.series( name: 'PV4', data: avg_pv4, color: $clr_pv4)
+        f.series( name: 'PV5', data: avg_pv5, color: $clr_pv5)
+        f.series( name: 'PV6', data: avg_pv6, color: $clr_pv6)
+        f.series( name: 'Ambient', data: avg_amb, color: $clr_amb)
 
       end 
 
@@ -917,7 +954,7 @@ class PagesController < ApplicationController
   def irr_chart(avg_py1, avg_py2, avg_rcell1, avg_rcell2, fluke_time_arr)
 
     chart = LazyHighCharts::HighChart.new('graph') do |f|
-        f.chart({:zoomType =>'x', backgroundColor: $col_back, height: $chart_ht})
+        f.chart({:zoomType =>'x', backgroundColor: $clr_back, height: $chart_ht})
         f.title({ :text=>"Solar Irradiance"})
 
         f.xAxis [{
@@ -934,10 +971,10 @@ class PagesController < ApplicationController
                 layout:'horizontal', 
                 itemDistance: 30)
 
-        f.series(name: 'Pyra 1', data: avg_py1, color: $col_py1)
-        f.series(name: 'Pyra 2', data: avg_py2, color: $col_py2)
-        f.series(name: 'RefCell 1', data: avg_rcell1, color: $col_refcell1)
-        f.series(name: 'RefCell 2', data: avg_rcell2, color: $col_refcell2)
+        f.series(name: 'Pyra 1', data: avg_py1, color: $clr_py1)
+        f.series(name: 'Pyra 2', data: avg_py2, color: $clr_py2)
+        f.series(name: 'RefCell 1', data: avg_rcell1, color: $clr_refcell1)
+        f.series(name: 'RefCell 2', data: avg_rcell2, color: $clr_refcell2)
 
     end
 
@@ -948,7 +985,7 @@ class PagesController < ApplicationController
   def wtemp_flowrate_chart(avg_hxi, avg_hxo, avg_wtt, avg_wtb, avg_amb, avg_flowrate, fluke_time_arr)
 
     chart = LazyHighCharts::HighChart.new('graph') do |f|
-        f.chart({:zoomType =>'x', backgroundColor: $col_back, height: $chart_ht})
+        f.chart({:zoomType =>'x', backgroundColor: $clr_back, height: $chart_ht})
         f.title({ :text=>"Water Temperature and Flowrate"})
 
         f.yAxis [
@@ -965,12 +1002,12 @@ class PagesController < ApplicationController
                 layout:'horizontal', 
                 itemDistance: 30)
 
-        f.series(name: 'HXer In', data: avg_hxi, color: $col_hxi)
-        f.series(name: 'HXer Out', data: avg_hxo, color: $col_hxo)
-        f.series(name: 'Tank Top', data: avg_wtt, color: $col_wtt)
-        f.series(name: 'Tank Bottom', data: avg_wtb, color: $col_wtb)
-        f.series(name: 'Ambient', data: avg_amb, color: $col_amb)
-        f.series(name: 'Flowrate', data: avg_flowrate, color: $col_flowrate)
+        f.series(name: 'HXer In', data: avg_hxi, color: $clr_hxi)
+        f.series(name: 'HXer Out', data: avg_hxo, color: $clr_hxo)
+        f.series(name: 'Tank Top', data: avg_wtt, color: $clr_wtt)
+        f.series(name: 'Tank Bottom', data: avg_wtb, color: $clr_wtb)
+        f.series(name: 'Ambient', data: avg_amb, color: $clr_amb)
+        f.series(name: 'Flowrate', data: avg_flowrate, color: $clr_flowrate)
 
       end
 
@@ -981,7 +1018,7 @@ class PagesController < ApplicationController
   def bat_box_chart(avg_bbox, avg_bpst, avg_amb, fluke_time_arr)
 
     chart = LazyHighCharts::HighChart.new('graph') do |f|
-        f.chart({:zoomType =>'x', backgroundColor: $col_back, height: $chart_ht})
+        f.chart({:zoomType =>'x', backgroundColor: $clr_back, height: $chart_ht})
         f.title({ :text=>"Battery Box Temperature"})
 
         f.yAxis [
@@ -998,9 +1035,9 @@ class PagesController < ApplicationController
                 layout:'horizontal', 
                 itemDistance: 30)
 
-        f.series(name: 'Bat Box', data: avg_bbox, color: $col_bbox)
-        f.series(name: 'Bat Post', data: avg_bpst, color: $col_bpst)
-        f.series(name: 'Ambient', data: avg_amb, color: $col_amb)
+        f.series(name: 'Bat Box', data: avg_bbox, color: $clr_bbox)
+        f.series(name: 'Bat Post', data: avg_bpst, color: $clr_bpst)
+        f.series(name: 'Ambient', data: avg_amb, color: $clr_amb)
 
       end
 
