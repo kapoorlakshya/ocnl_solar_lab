@@ -12,8 +12,8 @@ namespace :import_logs do
     puts "[#{st.strftime('%B %d, %Y at %H:%M:%S  %p')}] Started Fluke Hydra daily log import..."
     puts ""
 
-  	last_file = `ls /var/www/ocnl_solar_lab/tmp/fluke_log_uploads/`.split.last
-    in_file = "/var/www/ocnl_solar_lab/tmp/fluke_log_uploads/" + last_file
+    file_name = "custom_dataset.csv"
+    in_file = "/var/www/ocnl_solar_lab/tmp/fluke_log_uploads/" + file_name
 
         # Set temporary output file
         out_file = Tempfile.new('temp_data.csv')
@@ -59,7 +59,7 @@ namespace :import_logs do
           ActiveRecord::Base.transaction do
 
             Fluke.create(
-              log_time: Time.strptime(l["time"], "%m/%d/%Y %H:%M:%S"),
+              log_time: Time.strptime(l["time"], "%m/%d/%Y %H:%M"),
               off: l["off"].to_i,
               irr_py1: l["irr-py1"].to_f,
               irr_py2: l["irr-py2"].to_f,
@@ -90,11 +90,11 @@ namespace :import_logs do
 
         end # Hash ends
 
-  puts "Imported Fluke Log: #{last_file}        Timestamp: #{Time.now}"
+  puts "Imported Fluke Log: #{file_name}        Timestamp: #{Time.now}"
 
  # Delete last log file upload
  `sudo rm /var/www/ocnl_solar_lab/tmp/current_data.csv`
- `sudo rm /var/www/ocnl_solar_lab/tmp/fluke_log_uploads/#{last_file}`
+ `sudo rm /var/www/ocnl_solar_lab/tmp/fluke_log_uploads/#{file_name}`
 
   et = Time.now
   t = ( et - st ).floor
@@ -115,8 +115,8 @@ namespace :import_logs do
     puts "[#{st.strftime('%B %d, %Y at %H:%M:%S  %p')}] Started ACM300 daily log import..."
     puts ""
 
-    last_file = `ls /var/www/ocnl_solar_lab/tmp/acm_uploads/`.split.last
-    in_file = "/var/www/ocnl_solar_lab/tmp/acm_uploads/" + last_file # Original file
+    file_name = "custom_dataset.csv"
+    in_file = "/var/www/ocnl_solar_lab/tmp/acm_uploads/" + file_name # Original file
 
 
     # Set temporary output file
@@ -152,7 +152,7 @@ namespace :import_logs do
     # Record the attempt to log ACM300 data
     l = log_hash[0] # Select first log to grab datetime info
     alog = File.open("/var/www/ocnl_solar_lab/log/acm_attempt_import.log", 'a')
-    alog << "Importing #{last_file}: #{log_hash.first["log_date"]} #{log_hash.first["log_time"]}         Count: #{log_count}         Timestamp: #{Time.now}\n"
+    alog << "Importing #{file_name}: #{log_hash.first["log_date"]} #{log_hash.first["log_time"]}         Count: #{log_count}         Timestamp: #{Time.now}\n"
     alog.close
 
     # Dump log data from file to Db
@@ -188,7 +188,7 @@ namespace :import_logs do
     puts "Imported ACM300 log: #{dt}    Timestamp: #{Time.now}    Count: #{log_count}"
     
     # Delete last log file upload
-    # `sudo rm /var/www/ocnl_solar_lab/tmp/acm_uploads/#{last_file}`
+    # `sudo rm /var/www/ocnl_solar_lab/tmp/acm_uploads/#{file_name}`
     `sudo rm #{final_file}`
 
     et = Time.now

@@ -627,12 +627,12 @@ class PagesController < ApplicationController
 
   def set_display_dates(start_date, end_date)
 
-    prd = (end_date - start_date).to_i
+    prd = (end_date - start_date).to_i # Calculate period
 
     # Display date for the graphs
-    if prd == 0
+    if prd == 0 # Same day
       return start_date.strftime('%B %d, %Y')
-    else
+    else # Multi-date search
       s = start_date.strftime('%B %d, %Y')
       e = end_date.strftime('%B %d, %Y')
 
