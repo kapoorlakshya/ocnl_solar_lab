@@ -110,7 +110,7 @@
         <!-- If logs are outdated, display in red -->
         <% if @outdated_fluke %>
 
-          <span style="color: red;"><%= @last_fluke_time %> (Outdated)</span>
+          <span class="red_text"><%= @last_fluke_time %> (Outdated)</span>
 
         <% else %>
           
@@ -151,7 +151,7 @@
         <!-- If logs are outdated, display in red -->
         <% if @outdated_acm %>
 
-          <span style="color: red;"><%= @last_acm300_time %> (Outdated)</span>
+          <span class="red_text"><%= @last_acm300_time %> (Outdated)</span>
 
         <% else %>
           

@@ -1,0 +1,90 @@
+<div class="pages_body">
+
+	<h3>// Date Tracker</h3>
+
+	<p style="padding: 10px 0px 0px 0px">
+		Each date should have <strong>24 Hours x 60 Minutes = 1440</strong> entries. All dates with less than 1440 entries are marked as missing in <span style="color: red;">red</span>. Please follow these steps to import the missing logs: 
+
+		<ol>
+			<li>Copy the desired data file from <code>C:\Fluke Hydra\Data\ocnl_solar_lab_data\</code>.</li>
+			<li>Open data file in Notepad and only ONLY keep entries you want to insert. Keep the hilighted lines (<a href="/images/dataset_required_lines.PNG" target="_blank">Image</a>).</li>
+			<li>Rename file to <code>custom_dataset.csv</code>.</li>
+			<li>Use FileZilla and upload file to <code>/var/www/ocnl_solar_lab/tmp/fluke_log_uploads/</code> (<a href = "/images/custom_dataset_ftp_tutorial.png" target = "_blank">Image</a>).</li>
+			<li>Log in via putty and run <code>sol && rake import_logs:import_fluke</code>.</li>
+			<li>Missing dates should now be available.</li>
+			<li>You can either consolidate multiple date entries in one file or repeat process per date/file.</li>
+		</ol>
+
+		<br />
+		<strong>Elapsed Days</strong>: <%= @elapsed_days %>
+		<br />
+		<strong>Available Days</strong>: <%= @avl_days %>
+		<br />
+		<strong>Missing Days</strong>: <%= @missing_days %>
+
+	</p>
+
+	<br />
+	<br />
+
+	<table class="table table-striped table-responsive" style="width: 40%;">
+
+		<!-- To start, we will use current date as the next date since there isn't a previous date to 
+			compare with. After every iteration, we update the next day to be the day after current date.
+			If the current date is == next_date (from yesterday), no dates are missing. If the current 
+			day does not match yesterday's next day we are missing at least one date in between them.
+		-->
+
+		<% next_date = @avl_dts.first[0] %> <!-- First date to start with -->
+
+		<% @avl_dts.each do |d| %>
+
+			<% date_missing = false %>
+			<% minutes_missing = false %>
+			<% cur_date = d[0].to_date %>
+
+			<th>Date</th>
+			<th>Log Count (Minutes)</th>
+			<th>Need updates?</th>
+
+			<!-- Logic -->
+			<% date_missing = true if cur_date != next_date %>
+			<% minutes_missing = true if d[1].to_i < 1430 %> <!-- Each day has on avg. 1440 minutes -->
+
+			<tr>
+				<td>
+
+					<% if !date_missing %>
+						<%= d[0].strftime('%b %d, %Y') %>
+					<% else %>
+						<span class="red_text"><%= d[0].strftime('%b %d, %Y') %></span>
+					<% end %>
+
+					<% next_date = cur_date.next_day %> <!-- Update next date -->
+
+				</td>
+				
+				<td>
+
+					<% if !minutes_missing %>
+						<%= d[1] %>
+					<% else %>
+						<span class="red_text"><%= d[1] %></span>
+					<% end %>
+
+				</td>
+
+				<td>
+
+					<% if date_missing or minutes_missing %>
+						Yes
+					<% end %>
+
+				</td>
+
+			</tr>
+
+		<% end %>
+
+	</table>
+</div>

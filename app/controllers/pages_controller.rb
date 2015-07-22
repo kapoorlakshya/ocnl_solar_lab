@@ -40,6 +40,9 @@ class PagesController < ApplicationController
   $clr_pow_toal = '#FF6138'
 
 
+  # Chart height
+  $chart_ht = nil
+
   def documents_and_downloads
 
     @rnd = $rnd # Round values
@@ -280,9 +283,6 @@ class PagesController < ApplicationController
 
   end # documents method ends
 
-
-  # Chart height
-  $chart_ht = nil
 
   def graphs
 
@@ -533,6 +533,26 @@ class PagesController < ApplicationController
     end
 
   end # ACM Powerout ends
+
+  def date_tracker
+
+    @avl_dts = Fluke.group("date(log_time)").count
+
+    @avl_days = @avl_dts.count
+    @elapsed_days = ((Fluke.last.log_time.to_date) - (Fluke.first.log_time.to_date) ).to_i
+    @missing_days = @elapsed_days - @avl_days
+
+    return @avl_dts
+
+  end
+
+
+
+  #### Page methods end
+
+  ### Page helper methods start
+
+
 
   def parse_user_params(start_date, end_date)
 

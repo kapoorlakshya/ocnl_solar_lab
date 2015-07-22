@@ -42,12 +42,14 @@ namespace :import_multi_logs do
 
         end
 
-        # Close file and rename as current data file
-        out_file.close
-        FileUtils.mv(out_file, "/var/www/ocnl_solar_lab/tmp/current_data.csv")
+    # Close file and rename as current data file
+    out_file.close
+
+    cur_data = "/var/www/ocnl_solar_lab/tmp/current_data.csv"
+    FileUtils.mv(out_file, cur_data) # Rename file
 
         # Convert CSV data to Hash
-        log_hash = SmarterCSV.process("/var/www/ocnl_solar_lab/tmp/current_data.csv", \
+        log_hash = SmarterCSV.process(cur_data, \
           :row_sep => "\n", :col_sep => ', ', :quote_char => '"', :downcase_header => true, \
           :strip_whitespace => true, :strings_as_keys => true, :convert_values_to_numeric => false)
 
@@ -58,28 +60,28 @@ namespace :import_multi_logs do
             Fluke.create(
               log_time: Time.strptime(l["time"], "%m/%d/%Y %H:%M:%S"),
               off: l["off"].to_i,
-              irr_py1: l["irr-py1"].to_f,
-              irr_py2: l["irr-py2"].to_f,
-              irr_rc1: l["irr-rc1"].to_f,
-              temp_rc1: l["temp-rc1"].to_f,
-              irr_rc2: l["irr-rc2"].to_f,
-              temp_rc2: l["temp-rc2"].to_f,
+              irr_py1: l["irr-py1"],
+              irr_py2: l["irr-py2"],
+              irr_rc1: l["irr-rc1"],
+              temp_rc1: l["temp-rc1"],
+              irr_rc2: l["irr-rc2"],
+              temp_rc2: l["temp-rc2"],
               flowrate: l["flowrate"],
-              temp_pv1: l["temp-pv1"].to_f,
-              temp_pv2: l["temp-pv2"].to_f,
-              temp_pv3: l["temp-pv3"].to_f,
-              temp_pv4: l["temp-pv4"].to_f,
-              temp_pv5: l["temp-pv5"].to_f,
-              temp_pv6: l["temp-pv6"].to_f,
-              temp_hxi: l["temp-hxi"].to_f,
-              temp_hxo: l["temp-hxo"].to_f,
-              temp_amb: l["temp-amb"].to_f,
-              temp_bbox: l["temp-bbox"].to_f,
+              temp_pv1: l["temp-pv1"],
+              temp_pv2: l["temp-pv2"],
+              temp_pv3: l["temp-pv3"],
+              temp_pv4: l["temp-pv4"],
+              temp_pv5: l["temp-pv5"],
+              temp_pv6: l["temp-pv6"],
+              temp_hxi: l["temp-hxi"],
+              temp_hxo: l["temp-hxo"],
+              temp_amb: l["temp-amb"],
+              temp_bbox: l["temp-bbox"],
               temp_bpst: l["temp-bpst"],
-              temp_wtt: l["temp-wtt"].to_f,
-              temp_wtb: l["temp-wtb"].to_f,
+              temp_wtt: l["temp-wtt"],
+              temp_wtb: l["temp-wtb"],
               tempC: l["unused"],
-              total: l["total"].to_f,
+              total: l["total"],
               dioalarm:  l["dioalarm"].to_i
             )
 
