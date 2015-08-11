@@ -14,17 +14,17 @@ class PagesController < ApplicationController
   $clr_pv1 = '#1F3473'
   $clr_pv2 = '#825534'
   $clr_pv3 = '#D93250'
-  $clr_pv4 = '#6A9AD9'
-  $clr_pv5 = '#D94625'
+  $clr_pv4 = '#0F5FA6'
+  $clr_pv5 = '#F29F05'
   $clr_pv6 = '#00A388'
 
   $clr_amb = '#B40404'
 
-  $clr_py1 = '#FFBF00'
-  $clr_py2 = '#DF5A49'
+  $clr_py1 = '#494C8C'
+  $clr_py2 = '#EA2B3B'
 
   $clr_refcell1 = '#A1C43A'
-  $clr_refcell2 = '#0558A3'
+  $clr_refcell2 = '#70615D'
 
   $clr_hxi = '#AD5472'
   $clr_hxo = '#FF6138'

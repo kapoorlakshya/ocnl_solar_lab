@@ -6,8 +6,8 @@ module ApplicationHelper
     clr_pv1 = '#1F3473'
     clr_pv2 = '#825534'
     clr_pv3 = '#D93250'
-    clr_pv4 = '#6A9AD9'
-    clr_pv5 = '#D94625'
+    clr_pv4 = '#0F5FA6'
+    clr_pv5 = '#F29F05'
     clr_pv6 = '#00A388'
 
     case m

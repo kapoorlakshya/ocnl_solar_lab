@@ -117,7 +117,7 @@ namespace :import_logs do
     puts "[#{st.strftime('%B %d, %Y at %H:%M:%S  %p')}] Started ACM300 daily log import..."
     puts ""
 
-    file_name = "custom_dataset.csv"
+    file_name = `ls /var/www/ocnl_solar_lab/tmp/acm_uploads/`.split.last
     in_file = "/var/www/ocnl_solar_lab/tmp/acm_uploads/" + file_name # Original file
 
 
