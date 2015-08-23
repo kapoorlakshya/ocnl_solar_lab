@@ -73,19 +73,3 @@
     <% end %>
   </tbody>
 </table>
-
-<div class="pagination_area">
-
-  <span><%= will_paginate @acm_logs, :previous_label => '<span class="glyphicon glyphicon-chevron-left"></span>', :next_label => '<span class="glyphicon glyphicon-chevron-right"></span>' %></span>
-
-  <% if @acm_logs.count > 20 %>
-
-    <span class="nav_rod_paginate">//</span>
-
-    <a href="#top" id="top_link">
-      <span class="glyphicon glyphicon-chevron-up" aria-hidden="true"></span> Go to top
-    </a>
-
-  <% end %>
-  
-</div>

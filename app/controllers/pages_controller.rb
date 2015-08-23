@@ -534,7 +534,7 @@ class PagesController < ApplicationController
 
   end # ACM Powerout ends
 
-  def date_tracker
+  def data_tracker
 
     @avl_dts = Fluke.group("date(log_time)").count
 
@@ -706,30 +706,30 @@ class PagesController < ApplicationController
         # avg_rc2.push data_hash[k][ind][:temp_rc2].to_f
 
         # Gather PV data and sanitize values. Fluke has some garbage data issues.
-        avg_pv1.push sanitize_fluke_data( data_hash[k][ind][:temp_pv1] )
-        avg_pv2.push sanitize_fluke_data( data_hash[k][ind][:temp_pv2] )
-        avg_pv3.push sanitize_fluke_data( data_hash[k][ind][:temp_pv3] )
-        avg_pv4.push sanitize_fluke_data( data_hash[k][ind][:temp_pv4] )
-        avg_pv5.push sanitize_fluke_data( data_hash[k][ind][:temp_pv5] )
-        avg_pv6.push sanitize_fluke_data( data_hash[k][ind][:temp_pv6] )
+        avg_pv1.push sanitize( data_hash[k][ind][:temp_pv1] )
+        avg_pv2.push sanitize( data_hash[k][ind][:temp_pv2] )
+        avg_pv3.push sanitize( data_hash[k][ind][:temp_pv3] )
+        avg_pv4.push sanitize( data_hash[k][ind][:temp_pv4] )
+        avg_pv5.push sanitize( data_hash[k][ind][:temp_pv5] )
+        avg_pv6.push sanitize( data_hash[k][ind][:temp_pv6] )
 
         # HX data
-        avg_hxi.push sanitize_fluke_data( data_hash[k][ind][:temp_hxi] )
-        avg_hxo.push sanitize_fluke_data( data_hash[k][ind][:temp_hxo] )
+        avg_hxi.push sanitize( data_hash[k][ind][:temp_hxi] )
+        avg_hxo.push sanitize( data_hash[k][ind][:temp_hxo] )
 
         # Water
-        avg_flowrate.push sanitize_fluke_data( data_hash[k][ind][:flowrate] )
+        avg_flowrate.push sanitize( data_hash[k][ind][:flowrate] )
 
         # Tank data
-        avg_wtt.push sanitize_fluke_data( data_hash[k][ind][:temp_wtt] )
-        avg_wtb.push sanitize_fluke_data( data_hash[k][ind][:temp_wtb] )
+        avg_wtt.push sanitize( data_hash[k][ind][:temp_wtt] )
+        avg_wtb.push sanitize( data_hash[k][ind][:temp_wtb] )
 
         # Batery data
-        avg_bbox.push sanitize_fluke_data( data_hash[k][ind][:temp_bbox] )
-        avg_bpst.push sanitize_fluke_data( data_hash[k][ind][:temp_bpst] )
+        avg_bbox.push sanitize( data_hash[k][ind][:temp_bbox] )
+        avg_bpst.push sanitize( data_hash[k][ind][:temp_bpst] )
 
         # Ambient data
-        avg_amb.push sanitize_fluke_data( data_hash[k][ind][:temp_amb] )
+        avg_amb.push sanitize( data_hash[k][ind][:temp_amb] )
 
         # Store time for graph. Round to every @minter mins.
         t = Time.at( ( data_hash[k][ind][:log_time].to_time.to_i / \
@@ -764,7 +764,7 @@ class PagesController < ApplicationController
 
   end
 
-  def sanitize_fluke_data(val)
+  def sanitize(val)
 
     if val.to_f > 1000 # Replace out bad values
       return 0.0
@@ -786,7 +786,7 @@ class PagesController < ApplicationController
 
     # Variables to store ACM values to display on chart
     acm_time_arr = [] # Store timestamps
-    pow_hash = {} # Hash map to store powers per module per minute iteration
+    pow_hash = {} # Hash to store power values by module
 
     # Final power values per module will be stored here 
     acm_pv1 = []
@@ -814,7 +814,11 @@ class PagesController < ApplicationController
         m = l.acm_module
         pow = l.power
 
-        pow_hash.store( m, pow ) # Push module name and power value to hash
+        # Overwrite Module's (key's) value with actual data only if they are 0.0
+        # Do not overwrite valid values with 0.0 which is due to a bug in ACM
+        # where it repeats a module with values as 0.0
+        pow_hash.store( m, pow ) if pow != 0.0
+
       end
 
       # Push value in appropriate module's array. Push 0 if no power value is available.

@@ -19,7 +19,7 @@ Rails.application.routes.draw do
   get '/about' => 'pages#about'
   get '/gallery' => 'pages#gallery'
   get '/contact' => 'pages#contact'
-  get '/date_tracker' => 'pages#date_tracker'
+  get '/data_tracker' => 'pages#data_tracker'
   get '/power_by_module' => 'pages#power_by_module'
 
 end

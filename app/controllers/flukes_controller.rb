@@ -43,7 +43,7 @@ class FlukesController < ApplicationController
 
     # Search
     @flukes = Fluke.where(log_time: start_range..end_range ).order('(log_time) DESC') \
-      .paginate(page: params[:page], per_page: 60)
+      .paginate(page: params[:page], per_page: 240)
 
     # Update info
     @last_update = last_dt.strftime('%B %d, %Y')

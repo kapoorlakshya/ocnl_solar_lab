@@ -51,7 +51,7 @@ class Acm300LogsController < ApplicationController
     # Search
     @acm_logs = Acm300Log.where(log_date: start_date..end_date, \
                                   log_time: start_time..end_time ) \
-                  .order('log_time ASC').paginate(page: params[:page], per_page: 60)
+                  .order('log_time ASC')
 
     # Update info
     # @last_update = last_dt.strftime('%B %d, %Y')
