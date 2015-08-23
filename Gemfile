@@ -25,8 +25,6 @@ gem "jquery-rails"
 # See https://github.com/sstephenson/execjs#readme for more supported runtimes
 # gem 'therubyracer', platforms: :ruby
 
-gem 'simple_form'
-
 # Smarter CSV
 gem 'smarter_csv'
 

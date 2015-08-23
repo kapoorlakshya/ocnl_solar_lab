@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150512005023) do
+ActiveRecord::Schema.define(version: 20150823042826) do
 
   create_table "acm300_logs", force: :cascade do |t|
     t.string   "acm_module", limit: 255
@@ -31,29 +31,29 @@ ActiveRecord::Schema.define(version: 20150512005023) do
     t.integer  "off",        limit: 4
     t.string   "irr_py1",    limit: 255
     t.string   "irr_py2",    limit: 255
-    t.string   "irr_rc1",    limit: 255
-    t.string   "temp_rc1",   limit: 255
-    t.string   "irr_rc2",    limit: 255
-    t.string   "temp_rc2",   limit: 255
+    t.float    "irr_rc1",    limit: 24
+    t.float    "temp_rc1",   limit: 24
+    t.float    "irr_rc2",    limit: 24
+    t.float    "temp_rc2",   limit: 24
     t.string   "flowrate",   limit: 255
-    t.string   "temp_pv1",   limit: 255
-    t.string   "temp_pv2",   limit: 255
-    t.string   "temp_pv3",   limit: 255
-    t.string   "temp_pv4",   limit: 255
-    t.string   "temp_pv5",   limit: 255
-    t.string   "temp_pv6",   limit: 255
-    t.string   "temp_hxi",   limit: 255
-    t.string   "temp_hxo",   limit: 255
-    t.string   "temp_amb",   limit: 255
-    t.string   "temp_bbox",  limit: 255
-    t.string   "temp_wtt",   limit: 255
-    t.string   "temp_wtb",   limit: 255
+    t.float    "temp_pv1",   limit: 24
+    t.float    "temp_pv2",   limit: 24
+    t.float    "temp_pv3",   limit: 24
+    t.float    "temp_pv4",   limit: 24
+    t.float    "temp_pv5",   limit: 24
+    t.float    "temp_pv6",   limit: 24
+    t.float    "temp_hxi",   limit: 24
+    t.float    "temp_hxo",   limit: 24
+    t.float    "temp_amb",   limit: 24
+    t.float    "temp_bbox",  limit: 24
+    t.float    "temp_wtt",   limit: 24
+    t.float    "temp_wtb",   limit: 24
     t.string   "tempC",      limit: 255
     t.float    "total",      limit: 24
     t.integer  "dioalarm",   limit: 4
+    t.float   "temp_bpst",  limit: 255
     t.datetime "created_at",             null: false
     t.datetime "updated_at",             null: false
-    t.string   "temp_bpst",  limit: 255
   end
 
   create_table "pages", force: :cascade do |t|

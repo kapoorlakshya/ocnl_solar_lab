@@ -142,9 +142,6 @@ GEM
     sdoc (0.4.1)
       json (~> 1.7, >= 1.7.7)
       rdoc (~> 4.0)
-    simple_form (3.1.0)
-      actionpack (~> 4.0)
-      activemodel (~> 4.0)
     smarter_csv (1.1.0)
     sorcery (0.9.1)
       bcrypt (~> 3.1)
@@ -197,7 +194,6 @@ DEPENDENCIES
   rails (= 4.2.0)
   sass-rails (~> 5.0)
   sdoc (~> 0.4.0)
-  simple_form
   smarter_csv
   sorcery
   spring
