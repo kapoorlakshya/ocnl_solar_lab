@@ -14,10 +14,12 @@
  *= require flukes
  *= require pages
  *= require acm300_logs
+
  */
 
 @import "bootstrap-sprockets";
 @import "bootstrap";
+@import 'bootstrap-datetimepicker';
 
 body {
   background-color: #FCFCFC;

@@ -18,7 +18,6 @@ Rails.application.routes.draw do
   get '/documents_and_downloads' => 'pages#documents_and_downloads'
   get '/about' => 'pages#about'
   get '/gallery' => 'pages#gallery'
-  get '/contact' => 'pages#contact'
   get '/data_tracker' => 'pages#data_tracker'
   get '/power_by_module' => 'pages#power_by_module'
 

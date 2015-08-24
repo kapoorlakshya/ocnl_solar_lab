@@ -16,15 +16,30 @@
 
     <%= form_tag flukes_path, :method => 'get', :class => "form-inline" do %>  
       <p>
-        <%= text_field_tag :start_range, params[:start_range], value: @search_start_dt, class: "form-control input-sm", type: 'datetime' %>
+        <div class='input-group date' id='datetimepicker_fl1'>
+          <%= text_field_tag :start_range, params[:start_range], value: @search_start_dt, class: "form-control input-sm", type: 'datetime' %>
+          
+          <span class="input-group-addon">
+             <small><span class="glyphicon glyphicon-calendar"></span></small>
+          </span>
+        </div>
+        
         to 
-        <%= text_field_tag :end_range, params[:end_range], value: @search_end_dt, class: "form-control input-sm", type: 'datetime' %>  
+        
+        <div class='input-group date' id='datetimepicker_fl2'>
+          <%= text_field_tag :end_range, params[:end_range], value: @search_end_dt, class: "form-control input-sm", type: 'datetime' %>  
+
+          <span class="input-group-addon">
+            <small><span class="glyphicon glyphicon-calendar"></span></small>
+          </span>
+        </div>
 
         <% if logged_in? %>
           <%= submit_tag "Search", :name => nil, class: "btn btn-sm" %>
         <% else %>
           <%= submit_tag "Search", :name => nil, class: "btn btn-sm", disabled: true %>
         <% end %>
+
       </p>
     <% end %>
 

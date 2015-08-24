@@ -6,10 +6,23 @@
 
     <%= form_tag power_by_module_path, :method => 'get', :class => "form-inline" do %>  
       <p>
-        <%= text_field_tag :start_range, params[:start_range], value: @search_start_dt, class: "form-control input-sm" %>
-        to 
-        <%= text_field_tag :end_range, params[:end_range], value: @search_end_dt, class: "form-control input-sm" %>  
+        <div class='input-group date' id='datetimepicker_acm3'>
+          <%= text_field_tag :start_range, params[:start_range], value: @search_start_dt, class: "form-control input-sm" %>
+                  
+          <span class="input-group-addon">
+             <small><span class="glyphicon glyphicon-calendar"></span></small>
+          </span>
+        </div>
 
+        to 
+      
+        <div class='input-group date' id='datetimepicker_acm4'>
+          <%= text_field_tag :end_range, params[:end_range], value: @search_end_dt, class: "form-control input-sm" %>  
+          
+          <span class="input-group-addon">
+             <small><span class="glyphicon glyphicon-calendar"></span></small>
+          </span>
+        </div>
         <% if logged_in? %>
           <%= submit_tag "Search", :name => nil, class: "btn btn-sm" %>
         <% else %>

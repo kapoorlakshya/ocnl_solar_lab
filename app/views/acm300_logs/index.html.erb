@@ -14,9 +14,23 @@
 
     <%= form_tag acm300_logs_path, :method => 'get', :class => "form-inline" do %>  
       <p>
-        <%= text_field_tag :start_range, params[:start_range], value: @search_start_dt, class: "form-control input-sm" %>
+        <div class='input-group date' id='datetimepicker_acm1'>
+          <%= text_field_tag :start_range, params[:start_range], value: @search_start_dt, class: "form-control input-sm" %>
+                  
+          <span class="input-group-addon">
+             <small><span class="glyphicon glyphicon-calendar"></span></small>
+          </span>
+        </div>
+
         to 
-        <%= text_field_tag :end_range, params[:end_range], value: @search_end_dt, class: "form-control input-sm" %>  
+      
+        <div class='input-group date' id='datetimepicker_acm2'>
+          <%= text_field_tag :end_range, params[:end_range], value: @search_end_dt, class: "form-control input-sm" %>  
+          
+          <span class="input-group-addon">
+             <small><span class="glyphicon glyphicon-calendar"></span></small>
+          </span>
+        </div>
 
         <% if logged_in? %>
           <%= submit_tag "Search", :name => nil, class: "btn btn-sm" %>

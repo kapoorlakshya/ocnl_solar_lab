@@ -48,28 +48,6 @@
   <div class="pages_sub_titles">
     <h3>Module Map</h3>
 
-<!--     <table>
-      <tr>
-        <td>
-          PV1 - <span style="background-color: <%= $clr_pv1 %>; color: #F5F5F5; padding: 1px 4px 1px 4px">M421101006AJB</span>
-            <br />
-          PV2 - <span style="background-color: <%= $clr_pv2 %>; color: #F5F5F5; padding: 1px 4px 1px 4px">M431101063AJA</span> 
-            <br />
-          PV3 - <span style="background-color: <%= $clr_pv3 %>; color: #F5F5F5; padding: 1px 4px 1px 4px">M431101029AJ2</span> 
-            <br />
-          PV4 - <span style="background-color: <%= $clr_pv4 %>; color: #F5F5F5; padding: 1px 4px 1px 4px">M461101120AJF</span> 
-            <br />
-          PV5 - <span style="background-color: <%= $clr_pv5 %>; color: #F5F5F5; padding: 1px 4px 1px 4px">M461101053AJ8</span> 
-            <br />
-          PV6 - <span style="background-color: <%= $clr_pv6 %>; color: #F5F5F5; padding: 1px 4px 1px 4px">M461101194AJ0</span> 
-        </td>
-
-        <td>
-          <img src="images/module_diagram.PNG" style="width: 60%;"\>
-        </td>
-      </tr>  
-    </table> -->
-
     <table id="pv_map_table">
       <tr>
         <td class="pv_map_td" style="background-color: <%= $clr_pv1 %>; color: #F5F5F5;">M421101006AJB <br /> (PV1)</td>
@@ -123,10 +101,24 @@
 
   <%= form_tag documents_and_downloads_path, :method => 'get', :class => "form-inline" do %>  
     <p>  
-      <%= text_field_tag :start_range, params[:start_range], value: @last_fluke_time.to_date.beginning_of_day.strftime('%B %d, %Y %I:%M %p'), class: "form-control input-sm" %>
+      <div class='input-group date' id='datetimepicker_dl_fl1'>
+        <%= text_field_tag :start_range, params[:start_range], value: @last_fluke_time.to_date.beginning_of_day.strftime('%B %d, %Y %I:%M %p'), class: "form-control input-sm" %>
+        
+        <span class="input-group-addon">
+           <small><span class="glyphicon glyphicon-calendar"></span></small>
+        </span>
+      </div>
+
       to 
-      <%= text_field_tag :end_range, params[:end_range], value: @last_fluke_time, class: "form-control input-sm" %>
-      
+
+      <div class='input-group date' id='datetimepicker_dl_fl2'>
+        <%= text_field_tag :end_range, params[:end_range], value: @last_fluke_time, class: "form-control input-sm" %>
+        
+        <span class="input-group-addon">
+           <small><span class="glyphicon glyphicon-calendar"></span></small>
+        </span>
+      </div>
+
       <!-- Parameter to distinguish between two searches -->
       <%= hidden_field_tag :request_fluke, "fluke" %>
 
@@ -178,10 +170,22 @@
       </div>
       
       <p>  
-        <%= text_field_tag :start_range, params[:start_range], value: @last_acm300_time.to_date.beginning_of_day.strftime('%B %d, %Y %H:%M %p'), class: "form-control input-sm" %>
-          to 
-        <%= text_field_tag :end_range, params[:end_range], value: @last_acm300_time, class: "form-control input-sm" %>
+        <div class='input-group date' id='datetimepicker_dl_acm1'>
+          <%= text_field_tag :start_range, params[:start_range], value: @last_acm300_time.to_date.beginning_of_day.strftime('%B %d, %Y %H:%M %p'), class: "form-control input-sm" %>
 
+          <span class="input-group-addon">
+           <small><span class="glyphicon glyphicon-calendar"></span></small>
+          </span>
+        </div>
+
+          to 
+    
+        <div class='input-group date' id='datetimepicker_dl_acm2'>
+          <%= text_field_tag :end_range, params[:end_range], value: @last_acm300_time, class: "form-control input-sm" %>
+          <span class="input-group-addon">
+           <small><span class="glyphicon glyphicon-calendar"></span></small>
+          </span>
+        </div>
 
         <!-- Only logged in users are allowed to download -->
         <% if logged_in? %>

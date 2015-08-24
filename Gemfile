@@ -25,6 +25,9 @@ gem "jquery-rails"
 # See https://github.com/sstephenson/execjs#readme for more supported runtimes
 # gem 'therubyracer', platforms: :ruby
 
+gem 'momentjs-rails', '>= 2.9.0'
+gem 'bootstrap3-datetimepicker-rails', '~> 4.15.35'
+
 # Smarter CSV
 gem 'smarter_csv'
 
