@@ -1,6 +1,6 @@
 # OCNL SOLAR LAB
 
-This is an online dashboard for the solar panels on the 4th floor of OCN maintained by the Mechanical Engineering department of California State University, ChicoL. This application tracks sensor data by the minute and daily power data updated at midnight.
+This is an online dashboard for the solar panels on the 4th floor of OCNL maintained by the Mechanical Engineering department of California State University, Chico. This application tracks sensor data by the minute and daily power data updated at midnight.
 
 ### How it works
 
@@ -18,7 +18,7 @@ This is a 2-part system with one part being the data acqisition end and the othe
 
 * Download raw or transposed data in CSV to import in to Excel.
 
-* Date Tracker which tracks and reports any missing data for a day or a period of days. Based on the fact that there should be at least 24 Hours * 60 Minutes = 1440 Logs each day.
+* Date Tracker which tracks and reports any missing data for a day or a period of days. Based on the fact that there should be at least 24 Hours * 60 Minutes = 1440 Logs each day. It also has a tutorial on importing the missing data.
 
 * Gallery with images of the solar array
 
@@ -61,6 +61,16 @@ All the above are made available on the Dell PC under "C:\web_application\ocnl_s
 
 * Apache 2.4.x with Passsenger
 
-### How to run the test suite
+### Data Acquistion Setup
+
+The Fluke Hydra Logger dumps data every 60 seconds to a CSV file. The auto-rollover feature only allows us to get data by the hour, but we want the data every minute. There is a PowerShell script "output_last_log.ps1" which reads the last line from the file and outputs it to a log file with the header template on the first line. This log file is then uploaded to a FTP account on the oncl_solar_lab server where a rake task parses and imports the data every minute.
+
+A similar rake task is setup to run at 00:05 every night to import the ACM data.
+
+### For Recruiters
 
 Please email me and I would be happy to either provide a dataset or fire up a node on AWS to demo the app. The app is purposely designed around a pre-populated schema.
+
+### Poster
+
+I had to create a poster for this project. The poster has some more information on the solar panels and screenshots from the applicatio. [Dropbox Link](https://dl-web.dropbox.com/get/Public/ocnl_solar_lab_poster.pdf?_subject_uid=86360839&w=AABFWqT3LxcB44YQTvDqkWZcEZ3DMSp4v3hhl_q-qBGq7w)
