@@ -1,5 +1,5 @@
 option batch abort
 option confirm off
-open ftp://fluke_uploader:Chico12#@54.153.9.118
-put "C:\Fluke Hydra\Data\upload\*.*" "/"
+open ftp://fluke_uploader:solar_power@ocnl-solar-lab.ecst.csuchico.edu
+put "C:\web_application\upload\last_log_line.log"
 exit

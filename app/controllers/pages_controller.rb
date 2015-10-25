@@ -3,6 +3,7 @@ class PagesController < ApplicationController
   include ApplicationHelper
 
   $rnd = 5 # Round values to this place
+  $graph_subtitle = "Select and drag to zoom in. Click on legend to toggle lines."
 
   # COLOR GLOBALS 
   # ----------------
@@ -306,7 +307,7 @@ class PagesController < ApplicationController
 
     if !logged_in? and params[:start_range].present?
 
-      # This is the only check preventing the user to pass parameters
+      # This is the only check preventing the user from passing parameters
       # via address bar to search without logging in.
 
       @custom_msg = "Very clever! You need to be logged in to search."
@@ -362,27 +363,25 @@ class PagesController < ApplicationController
     # STORE DATA FOR FLUKE GRAPHS
     # -----------------------------
 
-
-
-    avg_py1 = []
-    avg_py2 = []
-    avg_rcell1 = []
-    avg_rcell2 = []
-    avg_pv1 = []
-    avg_pv2 = []
-    avg_pv2 = []
-    avg_pv3 = []
-    avg_pv4 = []
-    avg_pv5 = []
-    avg_pv6 = []
-    avg_hxi = []
-    avg_hxo = []
-    avg_wtt = []
-    avg_wtb = []
-    avg_bbox = []
-    avg_bpst = []
-    avg_amb = []
-    avg_flowrate = []
+    arr_py1 = []
+    arr_py2 = []
+    arr_rcell1 = []
+    arr_rcell2 = []
+    arr_pv1 = []
+    arr_pv2 = []
+    arr_pv2 = []
+    arr_pv3 = []
+    arr_pv4 = []
+    arr_pv5 = []
+    arr_pv6 = []
+    arr_hxi = []
+    arr_hxo = []
+    arr_wtt = []
+    arr_wtb = []
+    arr_bbox = []
+    arr_bpst = []
+    arr_amb = []
+    arr_flowrate = []
     fluke_time_arr = [] # Store timestamps
 
     # Show only time for plot from same day.
@@ -391,18 +390,14 @@ class PagesController < ApplicationController
 
     # RC1 and 2 are not required by Dr. Kallio
 
-    avg_py1, avg_py2, avg_rcell1, avg_rcell2, \
-    avg_pv1, avg_pv2, avg_pv2, avg_pv3, avg_pv4, \
-    avg_pv5, avg_pv6, avg_hxi, avg_hxo, avg_wtt, \
-    avg_wtb, avg_bbox, avg_bpst, avg_amb, avg_flowrate, \
+    arr_py1, arr_py2, arr_rcell1, arr_rcell2, \
+    arr_pv1, arr_pv2, arr_pv2, arr_pv3, arr_pv4, \
+    arr_pv5, arr_pv6, arr_hxi, arr_hxo, arr_wtt, \
+    arr_wtb, arr_bbox, arr_bpst, arr_amb, arr_flowrate, \
     fluke_time_arr = generate_fluke_data(data_flukes, xaxis_time_fmt) # Set fluke data
-
-
 
     # STORE DATA FOR ACM GRAPHS
     # ------------------------
-
-
 
     acm_time_arr = [] # Store timestamps
     pow_hash = {} # Hash map to store powers per module per minute iteration
@@ -430,16 +425,16 @@ class PagesController < ApplicationController
 
     @acm_pow_total_chart = acm_pow_total_chart(acm_pow_total, acm_time_arr)
 
-    @pv_temp_chart = pv_temp_chart(avg_pv1, avg_pv2, avg_pv3, avg_pv4, \
-      avg_pv5, avg_pv6, avg_amb, fluke_time_arr)
+    @pv_temp_chart = pv_temp_chart(arr_pv1, arr_pv2, arr_pv3, arr_pv4, \
+      arr_pv5, arr_pv6, arr_amb, fluke_time_arr)
 
-    @irr_chart = irr_chart(avg_py1, avg_py2, avg_rcell1, avg_rcell2, \
+    @irr_chart = irr_chart(arr_py1, arr_py2, arr_rcell1, arr_rcell2, \
       fluke_time_arr)
 
-     @wtemp_flowrate_chart = wtemp_flowrate_chart(avg_hxi, avg_hxo, \
-      avg_wtt, avg_wtb, avg_amb, avg_flowrate, fluke_time_arr)
+     @wtemp_flowrate_chart = wtemp_flowrate_chart(arr_hxi, arr_hxo, \
+      arr_wtt, arr_wtb, arr_amb, arr_flowrate, fluke_time_arr)
 
-     @bat_box_chart = bat_box_chart(avg_bbox, avg_bpst, avg_amb,  fluke_time_arr)
+     @bat_box_chart = bat_box_chart(arr_bbox, arr_bpst, arr_amb,  fluke_time_arr)
 
 
   end # Graphs method ends
@@ -664,25 +659,25 @@ class PagesController < ApplicationController
   def generate_fluke_data(data_hash, xaxis_time_fmt)
 
     # Variables to store Fluke values to display on chart
-    avg_py1 = []
-    avg_py2 = []
-    avg_rcell1 = []
-    avg_rcell2 = []
-    avg_pv1 = []
-    avg_pv2 = []
-    avg_pv2 = []
-    avg_pv3 = []
-    avg_pv4 = []
-    avg_pv5 = []
-    avg_pv6 = []
-    avg_hxi = []
-    avg_hxo = []
-    avg_wtt = []
-    avg_wtb = []
-    avg_bbox = []
-    avg_bpst = []
-    avg_amb = []
-    avg_flowrate = []
+    arr_py1 = []
+    arr_py2 = []
+    arr_rcell1 = []
+    arr_rcell2 = []
+    arr_pv1 = []
+    arr_pv2 = []
+    arr_pv2 = []
+    arr_pv3 = []
+    arr_pv4 = []
+    arr_pv5 = []
+    arr_pv6 = []
+    arr_hxi = []
+    arr_hxo = []
+    arr_wtt = []
+    arr_wtb = []
+    arr_bbox = []
+    arr_bpst = []
+    arr_amb = []
+    arr_flowrate = []
     fluke_time_arr = []
 
     # Iterate through each hour (key)
@@ -694,42 +689,42 @@ class PagesController < ApplicationController
         # Break if no data is avaialable for this range
         break if !data_hash[k]
 
-        avg_py1.push data_hash[k][ind][:irr_py1].to_f
-        avg_py2.push data_hash[k][ind][:irr_py2].to_f
+        arr_py1.push data_hash[k][ind][:irr_py1].to_f
+        arr_py2.push data_hash[k][ind][:irr_py2].to_f
 
         # Gather RCell data
-        avg_rcell1.push data_hash[k][ind][:irr_rc1].to_f
-        avg_rcell2.push data_hash[k][ind][:irr_rc2].to_f
+        arr_rcell1.push data_hash[k][ind][:irr_rc1].to_f
+        arr_rcell2.push data_hash[k][ind][:irr_rc2].to_f
 
         # Gather RC data - Not wanted by Dr. Kallio
-        # avg_rc1.push data_hash[k][ind][:temp_rc1].to_f
-        # avg_rc2.push data_hash[k][ind][:temp_rc2].to_f
+        # arr_rc1.push data_hash[k][ind][:temp_rc1].to_f
+        # arr_rc2.push data_hash[k][ind][:temp_rc2].to_f
 
         # Gather PV data and sanitize values. Fluke has some garbage data issues.
-        avg_pv1.push sanitize( data_hash[k][ind][:temp_pv1] )
-        avg_pv2.push sanitize( data_hash[k][ind][:temp_pv2] )
-        avg_pv3.push sanitize( data_hash[k][ind][:temp_pv3] )
-        avg_pv4.push sanitize( data_hash[k][ind][:temp_pv4] )
-        avg_pv5.push sanitize( data_hash[k][ind][:temp_pv5] )
-        avg_pv6.push sanitize( data_hash[k][ind][:temp_pv6] )
+        arr_pv1.push sanitize( data_hash[k][ind][:temp_pv1] )
+        arr_pv2.push sanitize( data_hash[k][ind][:temp_pv2] )
+        arr_pv3.push sanitize( data_hash[k][ind][:temp_pv3] )
+        arr_pv4.push sanitize( data_hash[k][ind][:temp_pv4] )
+        arr_pv5.push sanitize( data_hash[k][ind][:temp_pv5] )
+        arr_pv6.push sanitize( data_hash[k][ind][:temp_pv6] )
 
         # HX data
-        avg_hxi.push sanitize( data_hash[k][ind][:temp_hxi] )
-        avg_hxo.push sanitize( data_hash[k][ind][:temp_hxo] )
+        arr_hxi.push sanitize( data_hash[k][ind][:temp_hxi] )
+        arr_hxo.push sanitize( data_hash[k][ind][:temp_hxo] )
 
         # Water
-        avg_flowrate.push sanitize( data_hash[k][ind][:flowrate] )
+        arr_flowrate.push sanitize( data_hash[k][ind][:flowrate] )
 
         # Tank data
-        avg_wtt.push sanitize( data_hash[k][ind][:temp_wtt] )
-        avg_wtb.push sanitize( data_hash[k][ind][:temp_wtb] )
+        arr_wtt.push sanitize( data_hash[k][ind][:temp_wtt] )
+        arr_wtb.push sanitize( data_hash[k][ind][:temp_wtb] )
 
         # Batery data
-        avg_bbox.push sanitize( data_hash[k][ind][:temp_bbox] )
-        avg_bpst.push sanitize( data_hash[k][ind][:temp_bpst] )
+        arr_bbox.push sanitize( data_hash[k][ind][:temp_bbox] )
+        arr_bpst.push sanitize( data_hash[k][ind][:temp_bpst] )
 
         # Ambient data
-        avg_amb.push sanitize( data_hash[k][ind][:temp_amb] )
+        arr_amb.push sanitize( data_hash[k][ind][:temp_amb] )
 
         # Store time for graph. Round to every @minter mins.
         t = Time.at( ( data_hash[k][ind][:log_time].to_time.to_i / \
@@ -741,10 +736,10 @@ class PagesController < ApplicationController
 
     end # Outter loop end
 
-    return avg_py1, avg_py2, avg_rcell1, avg_rcell2, \
-           avg_pv1, avg_pv2, avg_pv2, avg_pv3, avg_pv4, \
-           avg_pv5, avg_pv6, avg_hxi, avg_hxo, avg_wtt, \
-           avg_wtb, avg_bbox, avg_bpst, avg_amb, avg_flowrate, \
+    return arr_py1, arr_py2, arr_rcell1, arr_rcell2, \
+           arr_pv1, arr_pv2, arr_pv2, arr_pv3, arr_pv4, \
+           arr_pv5, arr_pv6, arr_hxi, arr_hxo, arr_wtt, \
+           arr_wtb, arr_bbox, arr_bpst, arr_amb, arr_flowrate, \
            fluke_time_arr
 
   end
@@ -846,10 +841,14 @@ class PagesController < ApplicationController
     
   def acm_powerout_chart(acm_pv1, acm_pv2, acm_pv3, acm_pv4, acm_pv5, acm_pv6, acm_time_arr)
 
+        # Compute average pv temperate
+    avg_pow = compute_pv_averages(acm_pv1, acm_pv2, acm_pv3, acm_pv4, \
+      acm_pv5, acm_pv6)
+
     chart = LazyHighCharts::HighChart.new('graph') do |f|
         f.chart({:zoomType =>'x', backgroundColor: $clr_back, height: $chart_ht})
 
-        f.title({ :text=>"DC Power Output by Module"})
+        f.title({ :text=>"DC Power Output by Module (Avg: #{avg_pow.round($rnd)} W)" })
 
         f.xAxis [{
           type: 'category',
@@ -861,7 +860,7 @@ class PagesController < ApplicationController
                     margin: 30}
           }]
 
-        f.subtitle({ text: "Select and drag to zoom in.",
+        f.subtitle({ text: $graph_subtitle,
              align: "right",
              })
 
@@ -899,6 +898,10 @@ class PagesController < ApplicationController
                     margin: 30}
           }]
 
+        f.subtitle({ text: $graph_subtitle,
+             align: "right",
+             })
+
         f.legend(align: 'center', 
                 verticalAlign: 'bottom', 
                 layout:'horizontal', 
@@ -912,12 +915,16 @@ class PagesController < ApplicationController
 
   end
 
-  def pv_temp_chart(avg_pv1, avg_pv2, avg_pv3, avg_pv4, avg_pv5, avg_pv6, avg_amb, fluke_time_arr)
+  def pv_temp_chart(arr_pv1, arr_pv2, arr_pv3, arr_pv4, arr_pv5, arr_pv6, arr_amb, fluke_time_arr)
+
+    # Compute average pv temperate
+    avg_temp = compute_pv_averages(arr_pv1, arr_pv2, arr_pv3, arr_pv4, \
+      arr_pv5, arr_pv6)
 
     chart = LazyHighCharts::HighChart.new('graph') do |f|
         f.chart({:zoomType =>'x', backgroundColor: $clr_back, height: $chart_ht})
 
-        f.title({ :text=>"Module Temperature vs. Time of Day"})
+        f.title({ :text=>"Module Temperature vs. Time of Day (Avg: #{avg_temp.round($rnd)} °C)" })
 
         f.xAxis [{
           type: 'category',
@@ -929,18 +936,22 @@ class PagesController < ApplicationController
                     margin: 30}
           }]
 
+          f.subtitle({ text: $graph_subtitle,
+             align: "right",
+           })
+
         f.legend(align: 'center', 
                 verticalAlign: 'bottom', 
                 layout:'horizontal', 
                 itemDistance: 30)
 
-        f.series( name: 'PV1', data: avg_pv1, color: $clr_pv1)
-        f.series( name: 'PV2', data: avg_pv2, color: $clr_pv2)
-        f.series( name: 'PV3', data: avg_pv3, color: $clr_pv3)
-        f.series( name: 'PV4', data: avg_pv4, color: $clr_pv4)
-        f.series( name: 'PV5', data: avg_pv5, color: $clr_pv5)
-        f.series( name: 'PV6', data: avg_pv6, color: $clr_pv6)
-        f.series( name: 'Ambient', data: avg_amb, color: $clr_amb)
+        f.series( name: 'PV1', data: arr_pv1, color: $clr_pv1)
+        f.series( name: 'PV2', data: arr_pv2, color: $clr_pv2)
+        f.series( name: 'PV3', data: arr_pv3, color: $clr_pv3)
+        f.series( name: 'PV4', data: arr_pv4, color: $clr_pv4)
+        f.series( name: 'PV5', data: arr_pv5, color: $clr_pv5)
+        f.series( name: 'PV6', data: arr_pv6, color: $clr_pv6)
+        f.series( name: 'Ambient', data: arr_amb, color: $clr_amb)
 
       end 
 
@@ -948,7 +959,7 @@ class PagesController < ApplicationController
 
   end
 
-  def irr_chart(avg_py1, avg_py2, avg_rcell1, avg_rcell2, fluke_time_arr)
+  def irr_chart(arr_py1, arr_py2, arr_rcell1, arr_rcell2, fluke_time_arr)
 
     chart = LazyHighCharts::HighChart.new('graph') do |f|
         f.chart({:zoomType =>'x', backgroundColor: $clr_back, height: $chart_ht})
@@ -963,15 +974,19 @@ class PagesController < ApplicationController
           {:title => {:text => "Irradiance (W / m²)", :margin => 30} },
           ]
 
+        f.subtitle({ text: $graph_subtitle,
+           align: "right",
+         })
+
         f.legend(align: 'center', 
                 verticalAlign: 'bottom', 
                 layout:'horizontal', 
                 itemDistance: 30)
 
-        f.series(name: 'Pyra 1', data: avg_py1, color: $clr_py1)
-        f.series(name: 'Pyra 2', data: avg_py2, color: $clr_py2)
-        f.series(name: 'RefCell 1', data: avg_rcell1, color: $clr_refcell1)
-        f.series(name: 'RefCell 2', data: avg_rcell2, color: $clr_refcell2)
+        f.series(name: 'Pyra 1', data: arr_py1, color: $clr_py1)
+        f.series(name: 'Pyra 2', data: arr_py2, color: $clr_py2)
+        f.series(name: 'RefCell 1', data: arr_rcell1, color: $clr_refcell1)
+        f.series(name: 'RefCell 2', data: arr_rcell2, color: $clr_refcell2)
 
     end
 
@@ -979,7 +994,7 @@ class PagesController < ApplicationController
 
   end
 
-  def wtemp_flowrate_chart(avg_hxi, avg_hxo, avg_wtt, avg_wtb, avg_amb, avg_flowrate, fluke_time_arr)
+  def wtemp_flowrate_chart(arr_hxi, arr_hxo, arr_wtt, arr_wtb, arr_amb, arr_flowrate, fluke_time_arr)
 
     chart = LazyHighCharts::HighChart.new('graph') do |f|
         f.chart({:zoomType =>'x', backgroundColor: $clr_back, height: $chart_ht})
@@ -994,17 +1009,21 @@ class PagesController < ApplicationController
           categories: fluke_time_arr
         }]
 
+        f.subtitle({ text: $graph_subtitle,
+           align: "right",
+         })
+
         f.legend(align: 'center', 
                 verticalAlign: 'bottom', 
                 layout:'horizontal', 
                 itemDistance: 30)
 
-        f.series(name: 'HXer In', data: avg_hxi, color: $clr_hxi)
-        f.series(name: 'HXer Out', data: avg_hxo, color: $clr_hxo)
-        f.series(name: 'Tank Top', data: avg_wtt, color: $clr_wtt)
-        f.series(name: 'Tank Bottom', data: avg_wtb, color: $clr_wtb)
-        f.series(name: 'Ambient', data: avg_amb, color: $clr_amb)
-        f.series(name: 'Flowrate', data: avg_flowrate, color: $clr_flowrate)
+        f.series(name: 'HXer In', data: arr_hxi, color: $clr_hxi)
+        f.series(name: 'HXer Out', data: arr_hxo, color: $clr_hxo)
+        f.series(name: 'Tank Top', data: arr_wtt, color: $clr_wtt)
+        f.series(name: 'Tank Bottom', data: arr_wtb, color: $clr_wtb)
+        f.series(name: 'Ambient', data: arr_amb, color: $clr_amb)
+        f.series(name: 'Flowrate', data: arr_flowrate, color: $clr_flowrate)
 
       end
 
@@ -1012,7 +1031,7 @@ class PagesController < ApplicationController
   
   end
 
-  def bat_box_chart(avg_bbox, avg_bpst, avg_amb, fluke_time_arr)
+  def bat_box_chart(arr_bbox, arr_bpst, arr_amb, fluke_time_arr)
 
     chart = LazyHighCharts::HighChart.new('graph') do |f|
         f.chart({:zoomType =>'x', backgroundColor: $clr_back, height: $chart_ht})
@@ -1027,19 +1046,28 @@ class PagesController < ApplicationController
           categories: fluke_time_arr
         }]
 
+        f.subtitle({ text: $graph_subtitle,
+           align: "right",
+         })
+
+
         f.legend(align: 'center', 
                 verticalAlign: 'bottom', 
                 layout:'horizontal', 
                 itemDistance: 30)
 
-        f.series(name: 'Bat Box', data: avg_bbox, color: $clr_bbox)
-        f.series(name: 'Bat Post', data: avg_bpst, color: $clr_bpst)
-        f.series(name: 'Ambient', data: avg_amb, color: $clr_amb)
+        f.series(name: 'Bat Box', data: arr_bbox, color: $clr_bbox)
+        f.series(name: 'Bat Post', data: arr_bpst, color: $clr_bpst)
+        f.series(name: 'Ambient', data: arr_amb, color: $clr_amb)
 
       end
 
     return chart
   
+  end
+
+  def compute_pv_averages(arr_pv1, arr_pv2, arr_pv3, arr_pv4,  arr_pv5, arr_pv6)
+    ( arr_pv1.max + arr_pv2.max + arr_pv3.max + arr_pv4.max + arr_pv5.max + arr_pv6.max ) / 6
   end
 
 end # Class ends
