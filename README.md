@@ -73,4 +73,4 @@ Please email me and I would be happy to either provide a dataset or fire up a no
 
 ### Poster
 
-I had to create a poster as part of my Capstone project. The poster has some more information on the solar panels and screenshots from the application. [Dropbox Link](https://dl-web.dropbox.com/get/Public/ocnl_solar_lab_poster.pdf?_subject_uid=86360839&w=AABFWqT3LxcB44YQTvDqkWZcEZ3DMSp4v3hhl_q-qBGq7w)
+I had to create a poster as part of my Capstone project. The poster has some more information on the solar panels and screenshots from the application. [Dropbox Link](https://dl.dropboxusercontent.com/content_link/37R9J2rMCTIDD1vwKsICYfl4Za4qlZQPiZ2MSzysAflMytKiGgGHsarKUuAvI2Bo/file)
