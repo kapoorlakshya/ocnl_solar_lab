@@ -67,7 +67,7 @@ The Fluke Hydra Logger dumps data every 60 seconds to a CSV file. The auto-rollo
 
 A similar rake task is setup to run at 00:05 every night to import the ACM data.
 
-### For Recruiters
+### Demo
 
 Please email me and I would be happy to either provide a dataset or fire up a node on AWS to demo the app. The app is purposely designed around a pre-populated schema.
 
