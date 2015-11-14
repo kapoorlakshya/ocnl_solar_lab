@@ -69,7 +69,7 @@ A similar rake task is setup to run at 00:05 every night to import the ACM data.
 
 ### Demo
 
-Please email me and I would be happy to either provide a dataset or fire up a node on AWS to demo the app. The app is purposely designed around a pre-populated schema.
+Please email me and I would be happy to either provide a dataset or fire up a node on AWS to demo the app. The app is purposely designed around a pre-populated schema. Chico State students (behind the firewall/via VPN) can access the OCNL Solar Lab at http://ocnl-solar-lab.ecst.csuchico.edu/.
 
 ### Poster
 
