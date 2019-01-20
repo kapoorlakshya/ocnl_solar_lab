@@ -1,4 +1,4 @@
-# OCNL SOLAR LAB
+# OCNL Solar Lab Dashboard
 
 This is an online dashboard for the solar panels on the 4th floor of OCNL maintained by the Mechanical Engineering department of California State University, Chico. This application tracks sensor data by the minute and daily power data updated at midnight.
 
